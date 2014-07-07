@@ -12,5 +12,6 @@
 #
 class confluence (
 ) inherits confluence::params {
-  
+  # Set up Apache
+  class { 'confluence::apache': }
 }
