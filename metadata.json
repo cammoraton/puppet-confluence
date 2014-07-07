@@ -1,0 +1,21 @@
+{
+  "author": "",
+  "checksums": {
+    "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
+    "manifests/init.pp": "ac5313776817494a9f4b95d3c070f520",
+    "Modulefile": "3ad90487abcb0cf4a1af3f2bf58a28e6",
+    "spec/spec.opts": "a600ded995d948e393fbe2320ba8e51c",
+    "tests/init.pp": "dbdcc9265de42b7af5a4bb817b1596e0",
+    "spec/spec_helper.rb": "3ea886dd135e120afa31e0aab12e85b0",
+    "README.markdown": "98d628c448b231bc34e6471db4fb69d4"
+  },
+  "dependencies": [],
+  "description": "",
+  "license": "",
+  "name": "cammoraton-confluence",
+  "project_page": "",
+  "source": "",
+  "summary": "",
+  "types": [],
+  "version": "0.1.0"
+}
