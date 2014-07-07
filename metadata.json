@@ -3,6 +3,7 @@
   "checksums": {
     "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
     "manifests/params.pp": "7a0918ad13b80a42937c7583225459cf",
+    "templates/server.xml.erb": "d41d8cd98f00b204e9800998ecf8427e",
     "manifests/init.pp": "2024bb8e7db1fe9ede1f9d49fdd23624",
     "Modulefile": "0760bca32b498ebf35626aeaf750fe75",
     "spec/spec.opts": "a600ded995d948e393fbe2320ba8e51c",
