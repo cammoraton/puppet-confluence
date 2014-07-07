@@ -1,18 +1,28 @@
 {
-  "author": "",
+  "author": "ncc@ccs.neu.edu",
   "checksums": {
     "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
-    "manifests/init.pp": "ac5313776817494a9f4b95d3c070f520",
-    "Modulefile": "3ad90487abcb0cf4a1af3f2bf58a28e6",
+    "manifests/params.pp": "7a0918ad13b80a42937c7583225459cf",
+    "manifests/init.pp": "2024bb8e7db1fe9ede1f9d49fdd23624",
+    "Modulefile": "0760bca32b498ebf35626aeaf750fe75",
     "spec/spec.opts": "a600ded995d948e393fbe2320ba8e51c",
     "tests/init.pp": "dbdcc9265de42b7af5a4bb817b1596e0",
     "spec/spec_helper.rb": "3ea886dd135e120afa31e0aab12e85b0",
     "README.markdown": "98d628c448b231bc34e6471db4fb69d4"
   },
-  "dependencies": [],
+  "dependencies": [
+    {
+      "name": "puppetlabs/postgresql",
+      "version_requirement": "\u003e\u003d 3.3.3"
+    },
+    {
+      "name": "puppetlabs/java_ks",
+      "version_requirement": "\u003e\u003d 1.2.4"
+    }
+  ],
   "description": "",
   "license": "",
-  "name": "cammoraton-confluence",
+  "name": "neuccis-confluence",
   "project_page": "",
   "source": "",
   "summary": "",

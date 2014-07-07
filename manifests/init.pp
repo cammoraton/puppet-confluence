@@ -10,6 +10,7 @@
 #
 # Sample Usage:
 #
-class confluence {
-  # Testing webhooks
+class confluence (
+) inherits confluence::params {
+  
 }
