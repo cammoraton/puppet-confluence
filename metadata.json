@@ -2,20 +2,28 @@
   "author": "ncc@ccs.neu.edu",
   "checksums": {
     "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
+    "spec/spec_helper_system.rb": "c54584d03120766bac28221597920d3d",
+    "Gemfile": "e5236c4ba200a1329b391cd30e5dce74",
     "spec/classes/java_ks_spec.rb": "4c3cb1a2b232e90cbf5624caab57865d",
-    "spec/classes/params_spec.rb": "4c3cb1a2b232e90cbf5624caab57865d",
+    "spec/fixtures/manifests/site.pp": "d41d8cd98f00b204e9800998ecf8427e",
+    "spec/classes/params_spec.rb": "624c9bf73915a7aab5efe4d4d0b5491f",
     "Modulefile": "102dcfc77518ec4f5a8aeebe2db624a0",
     "spec/spec.opts": "a600ded995d948e393fbe2320ba8e51c",
-    "manifests/apache.pp": "e6874d62b23f5d1e247a753093a692c4",
+    "spec/fixtures/modules/confluence/manifests/apache.pp": "905edac3d936c89724a5b480e2a6489c",
+    "manifests/apache.pp": "905edac3d936c89724a5b480e2a6489c",
     "tests/init.pp": "dbdcc9265de42b7af5a4bb817b1596e0",
-    "spec/spec_helper.rb": "3ea886dd135e120afa31e0aab12e85b0",
+    "spec/spec_helper.rb": "c4a09629f92c8acab7b1c5fb193bb0f6",
+    "spec/fixtures/modules/confluence/templates/server.xml.erb": "6aeb04465b1646e2c5b8102b468fcf23",
+    "spec/fixtures/modules/confluence/manifests/init.pp": "ea85ce96f7f9b6a8b0753f6e7d42eaf7",
     "README.markdown": "98d628c448b231bc34e6471db4fb69d4",
+    "spec/fixtures/modules/confluence/manifests/params.pp": "7a0918ad13b80a42937c7583225459cf",
     "manifests/params.pp": "7a0918ad13b80a42937c7583225459cf",
-    "spec/classes/apache_spec.rb": "4c3cb1a2b232e90cbf5624caab57865d",
+    "spec/classes/apache_spec.rb": "2677ac767ea210c75b4448d6096bcb9a",
     "manifests/java_ks.pp": "b34940173e53e60c41574ec6a980c474",
     "templates/server.xml.erb": "6aeb04465b1646e2c5b8102b468fcf23",
     "manifests/init.pp": "ea85ce96f7f9b6a8b0753f6e7d42eaf7",
-    "spec/classes/confluence_spec.rb": "684adcaaf17d15cd28e0b0ddc768e88a"
+    "spec/classes/confluence_spec.rb": "9f393d75736e6b4cfa671550f8ba7660",
+    "spec/fixtures/modules/confluence/manifests/java_ks.pp": "b34940173e53e60c41574ec6a980c474"
   },
   "dependencies": [
     {
