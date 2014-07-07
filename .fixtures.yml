@@ -1,0 +1,13 @@
+fixtures:
+  repositories:
+    stdlib: "git://github.com/puppetlabs/puppetlabs-stdlib.git"
+    apt: "git://github.com/puppetlabs/puppetlabs-apt.git"
+    concat: "git://github.com/puppetlabs/puppetlabs-concat.git"
+    firewall: "git://github.com/puppetlabs/puppetlabs-firewall.git"
+    java_ks: "git://github.com/puppetlabs/puppetlabs-java_ks.git"
+    postgresql: "git://github.com/puppetlabs/puppetlabs-postgresql.git"
+    apache: 
+      repo: "git://github.com/puppetlabs/puppetlabs-apache.git"
+      ref: "0.9.0"
+  symlinks:
+    confluence: "#{source_dir}"

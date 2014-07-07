@@ -11,8 +11,6 @@
 # Sample Usage:
 #
 class confluence::apache (
-  $fqdn,
-  
 ) {
   # Default apache vhost should redirect to ssl vhost.
   apache::listen { '80': }
