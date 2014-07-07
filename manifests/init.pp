@@ -11,5 +11,5 @@
 # Sample Usage:
 #
 class confluence {
-
+  # Testing webhooks
 }
