@@ -14,7 +14,7 @@ class confluence::service (
   $service_enable = true,
 ) {
   validate_bool($service_enable)
-  
+
   service { 'confluence':
     ensure => $service_enable,
     name   => $confluence::confluence_name,

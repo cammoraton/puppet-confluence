@@ -10,8 +10,6 @@
 #
 # Sample Usage:
 #
-class confluence::java_ks (
-  
+class confluence::java (
 ) {
-  
 }

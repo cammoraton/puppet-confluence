@@ -15,11 +15,14 @@ class confluence (
   $service_enable       = true,
   $ldaps                = false,
   $ldaps_cert           = undef,
-  $standalone           = false, # 
+  $standalone           = false,
+  $servername           = $confluence::params::servername,
+  $user                 = $confluence::params::user,
+  $group                = $confluence::params::group,
 ) inherits confluence::params {
   validate_bool($standalone)
   validate_bool($service_enable)
- 
+
   package { 'confluence':
     ensure => $confluence::confluence_version,
     notify => Class['Confluence::Service'],
@@ -28,5 +31,4 @@ class confluence (
   class { 'confluence::service':
     service_enable => $service_enable,
   }
-  
 }

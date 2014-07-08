@@ -11,5 +11,17 @@
 # Sample Usage:
 #
 class confluence::params {
-  
+  $user = 'confluence'
+  $group = 'confluence'
+
+  if($::fqdn) {
+    $servername = $::fqdn
+  } else {
+    $servername = $::hostname
+  }
+
+  if $::osfamily == 'Debian' {
+  } else {
+    fail("Class['confluence::params']: Unsupported osfamily: ${::osfamily}")
+  }
 }
