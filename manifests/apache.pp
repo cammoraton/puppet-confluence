@@ -13,6 +13,6 @@
 class confluence::apache (
 ) {
   include ::apache
-  
-  
+
+
 }

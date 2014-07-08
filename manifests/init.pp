@@ -36,7 +36,7 @@ class confluence (
   }
 
   if $standalone {
-    
+
   } else {
     class { 'confluence::apache': }
   }
