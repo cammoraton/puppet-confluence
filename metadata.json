@@ -9,7 +9,7 @@
     "spec/classes/params_spec.rb": "b4e8475d001f70b987664b9ef82a0154",
     "Modulefile": "230cec1e929b5c0c541b2e0ea2849b5a",
     "spec/spec.opts": "a600ded995d948e393fbe2320ba8e51c",
-    "manifests/apache.pp": "559374e69ce86a053da9121299ede297",
+    "manifests/apache.pp": "720e45937e2620bfc42d520c19890462",
     "tests/init.pp": "dbdcc9265de42b7af5a4bb817b1596e0",
     "spec/spec_helper.rb": "c4a09629f92c8acab7b1c5fb193bb0f6",
     "README.markdown": "73288f540544418f869ab353e21fa2c2",
