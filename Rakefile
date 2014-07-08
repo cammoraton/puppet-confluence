@@ -19,4 +19,4 @@ task :bundle do
 end
 
 # Default task - lint, validate, test
-task :default => [:lint, :validate, :spec_standalone]
+task :default => [:lint, :validate, :spec]

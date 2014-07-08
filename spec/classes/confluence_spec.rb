@@ -12,7 +12,7 @@ describe 'confluence', :type => :class do
       }
     end
     # Not understanding this test
-    # it { should include_class("confluence::params") }
+    #it { should include_class("confluence::params") }
       
     it { should contain_package("confluence").with(
       'notify' => 'Class[Confluence::Service]')}
