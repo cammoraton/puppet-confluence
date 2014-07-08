@@ -18,11 +18,11 @@ class confluence::apache (
   $servername        = $confluence::servername,
 ) {
   #validate_bool($redirect_to_https)
-  
-  class { "::apache": default_vhost => false }
+
+  class { '::apache': default_vhost => false }
   if $https_port {
     class { '::apache::mod::ssl': }
-    ensure_resource('apache::listen', "${https_port}", {})
+    ensure_resource('apache::listen', $https_port, {})
 
     ::apache::vhost { 'default-ssl':
       port              => $https_port,
@@ -30,7 +30,7 @@ class confluence::apache (
       ssl               => true,
       docroot           => $::apache::docroot,
       proxy_pass        => [ { } ],
-    }    
+    }
     if $redirect_to_https {
       ::apache::vhost { 'default':
         port            => $http_port,
@@ -54,5 +54,5 @@ class confluence::apache (
       default_vhost   => true,
       proxy_pass      => [ { } ],
     }
-  }  
+  }
 }
