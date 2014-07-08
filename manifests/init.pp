@@ -24,6 +24,7 @@ class confluence (
   $group                = $confluence::params::group,
   $ldaps_cert           = false,
   $ldaps_server         = undef,
+  $ldaps_port           = '636',
   $certs_dir            = $confluence::params::certs_dir,
   $truststore           = $confluence::params::default_truststore,
   $truststore_pass      = 'changeit',
@@ -72,9 +73,9 @@ class confluence (
       ensure       => present,
       notify       => Exec['confluence::ldaps_cert::retrieve_cert'],
     }
+    # Actual command is in the template
     exec { 'confluence::ldaps_cert::retrieve_cert':
-      command      => "openssl s_client -showcerts -connect ${ldaps_server}:636 </dev/null " +
-                      "| sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > ${certs_dir}/${ldaps_server}.pem"
+      command      => template("confluence/openssl_pem_retrieve"),
       refreshonly  => true,
     }
     java_ks { 'confluence::ldaps_cert':
