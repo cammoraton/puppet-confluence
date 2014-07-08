@@ -44,7 +44,6 @@ describe 'confluence', :type => :class do
           :certs_dir    => "/usr/share/confluence/pki",
         }
       end
-      # Commenting out tests is bad... but... 
       #it { should contain_file("/usr/share/confluence/pki") }
       #it { should contain_file("/usr/share/confluence/pki/ldap.example.com.pem") }
       #it { should contain_java_ks('confluence::ldaps::certificate') }
