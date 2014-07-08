@@ -26,6 +26,10 @@ class confluence (
 
   validate_re($version, 'present|installed|latest|^[.+_0-9a-zA-Z:-]+$')
 
+  class { 'confluence::java':
+    notify => Class['Confluence::Service'],
+  }
+
   package { 'confluence':
     ensure => $confluence::version,
     notify => Class['Confluence::Service'],
@@ -39,5 +43,8 @@ class confluence (
 
   } else {
     class { 'confluence::apache': }
+  }
+
+  if $ldaps {
   }
 }
