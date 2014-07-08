@@ -11,8 +11,9 @@
 # Sample Usage:
 #
 class confluence (
-  $confluence_version   = 'installed',
-  $service_enable       = true,
+  $version   = 'installed',
+  $enable_service       = true,
+  $service_name         = 'confluence',
   $ldaps                = false,
   $ldaps_cert           = undef,
   $standalone           = false,
@@ -21,14 +22,22 @@ class confluence (
   $group                = $confluence::params::group,
 ) inherits confluence::params {
   validate_bool($standalone)
-  validate_bool($service_enable)
+  validate_bool($enable_service)
+
+  validate_re($version, 'present|installed|latest|^[.+_0-9a-zA-Z:-]+$')
 
   package { 'confluence':
-    ensure => $confluence::confluence_version,
+    ensure => $confluence::version,
     notify => Class['Confluence::Service'],
   }
 
   class { 'confluence::service':
-    service_enable => $service_enable,
+    enable_service => $enable_service,
+  }
+
+  if $standalone {
+    
+  } else {
+    class { 'confluence::apache': }
   }
 }

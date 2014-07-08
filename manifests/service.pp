@@ -11,13 +11,13 @@
 # Sample Usage:
 #
 class confluence::service (
-  $service_enable = true,
+  $enable_service = true,
 ) {
-  validate_bool($service_enable)
+  validate_bool($enable_service)
 
   service { 'confluence':
-    ensure => $service_enable,
-    name   => $confluence::confluence_name,
-    enable => $service_enable,
+    ensure => $enable_service,
+    name   => $confluence::service_name,
+    enable => $enable_service,
   }
 }

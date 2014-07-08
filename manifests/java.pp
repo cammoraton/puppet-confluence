@@ -1,6 +1,6 @@
 # Class: confluence::java_ks
 #
-# This class manages java keystores
+# This class manages java
 #
 # Parameters:
 #
@@ -10,6 +10,8 @@
 #
 # Sample Usage:
 #
-class confluence::java (
-) {
+class confluence::java {
+  include ::java
+
+  $default_truststore = "${::java::java_home}/jre/lib/security/cacerts"
 }
