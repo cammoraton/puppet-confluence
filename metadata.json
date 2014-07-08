@@ -17,7 +17,7 @@
     "manifests/params.pp": "4183395e4245367ffe666948a0c535ab",
     "templates/server.xml.erb": "6aeb04465b1646e2c5b8102b468fcf23",
     "manifests/init.pp": "c2050ef62a135281df12e1cab3681e3d",
-    "spec/classes/confluence_spec.rb": "5741b84dcf9694337e23810b96e408d9",
+    "spec/classes/confluence_spec.rb": "3943587140731ea53d361ab0146c265b",
     "Gemfile.lock": "d2f53f0fc78cacc709d77ada08cc7a2c"
   },
   "dependencies": [

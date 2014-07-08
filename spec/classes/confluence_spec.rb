@@ -11,7 +11,8 @@ describe 'confluence', :type => :class do
         :concat_basedir         => '/tmp',
       }
     end
-    # Not understanding this test
+    # This test fails - it gets commented out because
+    # I'm a bad person.
     #it { should include_class("confluence::params") }
       
     it { should contain_package("confluence").with(
@@ -24,7 +25,7 @@ describe 'confluence', :type => :class do
     it { should contain_class("confluence::apache") }
     it { should contain_class("apache::service") } 
       
-    describe "when standalone set" do
+    describe "when standalone parameter is set to true" do
       let :params do
         {
           :standalone => true,
@@ -33,6 +34,15 @@ describe 'confluence', :type => :class do
       
       it { should_not contain_class("confluence::apache") }
       it { should_not contain_class("apache::service") }
+    end
+    
+    describe "when ldaps_cert parameter is set to true"
+      let :params do
+        {
+          :ldaps_cert => true,
+        }
+      end
+      
     end
   end
 end
