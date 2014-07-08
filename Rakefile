@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'puppetlabs_spec_helper/rake_tasks'
 
-desc 'Set up gems and vendor modules'
+desc 'Set up gems and fixtures'
 task :bootstrap do
   $stderr.puts "---> Running bundler"
   Rake::Task[:bundle].invoke
@@ -13,9 +13,4 @@ end
 desc "Install gems from Gemfile"
 task :bundle do
   system 'bundle install'
-end
- 
-desc 'Install modules with librarian-puppet'
-task :librarian do
-  system "librarian-puppet instal --path=spec/fixtures/modules"
 end
