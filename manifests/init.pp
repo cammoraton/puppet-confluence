@@ -24,6 +24,7 @@ class confluence (
   $group                = $confluence::params::group,
   $ldaps_cert           = false,
   $ldaps_server         = undef,
+  $certs_dir            = $confluence::params::certs_dir,
   $truststore           = $confluence::params::default_truststore,
   $truststore_pass      = 'changeit',
 ) inherits confluence::params {
@@ -48,7 +49,7 @@ class confluence (
   if $standalone {
 
   } else {
-    class { 'confluence::apache': 
+    class { 'confluence::apache':
       http_port         => $http_port,
       https_port        => $https_port,
       redirect_to_https => $redirect_to_https,
@@ -57,14 +58,28 @@ class confluence (
     }
   }
 
+  # Should probably move this off into a defined type at some point
   if $ldaps_cert {
     unless $ldaps_server {
-      fail("")
+      fail("Class['confluence']: LDAPS server ${ldaps_server} failed validation")
     }
-    
-    java_ks { 'confluence::ldaps_cert': 
-      certificate  => false,
+    file { $certs_dir:
+      ensure       => directory,
+      owner        => $user,
+      group        => $group,
+    } ->
+    file { "${certs_dir}/${ldaps_server}.pem":
+      ensure       => present,
+      notify       => Exec['confluence::ldaps_cert::retrieve_cert'],
+    }
+    exec { 'confluence::ldaps_cert::retrieve_cert':
+      command      => "openssl s_client -showcerts -connect ${ldaps_server}:636 </dev/null " +
+                      "| sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > ${certs_dir}/${ldaps_server}.pem"
+      refreshonly  => true,
+    }
+    java_ks { 'confluence::ldaps_cert':
       ensure       => latest,
+      certificate  => "${certs_dir}/${ldaps_server}.pem",
       target       => $truststore,
       password     => $truststore_pass,
       trustcacerts => true,
