@@ -62,7 +62,7 @@ class confluence (
   # Should probably move this off into a defined type at some point
   if $ldaps_cert {
     unless $ldaps_server {
-      fail("Class['confluence']: LDAPS server ${ldaps_server} failed validation")
+      fail("Class['confluence']: Invalid ldaps_server: ${ldaps_server}")
     }
     file { $certs_dir:
       ensure       => directory,
@@ -75,7 +75,7 @@ class confluence (
     }
     # Actual command is in the template
     exec { 'confluence::ldaps_cert::retrieve_cert':
-      command      => template("confluence/openssl_pem_retrieve"),
+      command      => template('confluence/openssl_pem_retrieve'),
       refreshonly  => true,
     }
     java_ks { 'confluence::ldaps_cert':

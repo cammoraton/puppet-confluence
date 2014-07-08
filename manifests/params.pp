@@ -19,7 +19,7 @@ class confluence::params {
   } else {
     $servername = $::hostname
   }
-  $certs_dir = "/usr/share/confluence/pki"
+  $certs_dir = '/usr/share/confluence/pki'
 
   $default_truststore = "${::java::java_home}/jre/lib/security/cacerts"
 
