@@ -4,6 +4,8 @@ require 'puppetlabs_spec_helper/rake_tasks'
 require 'ci/reporter/rake/rspec'
 
 PuppetLint.configuration.ignore_paths = ["spec/**/*.pp"]
+# Autoloader errors every. time.
+PuppetLint.configuration.send('disable_autoloader_layout')
 
 ENV['CI_REPORTS'] = 'reports'  
 
