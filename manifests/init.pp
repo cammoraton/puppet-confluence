@@ -22,7 +22,7 @@ class confluence (
   $servername           = $confluence::params::servername,
   $user                 = $confluence::params::user,
   $group                = $confluence::params::group,
-  $ldaps_cert           = false,
+  $ldaps                = false,
   $ldaps_server         = undef,
   $ldaps_port           = '636',
   $certs_dir            = $confluence::params::certs_dir,
@@ -60,7 +60,7 @@ class confluence (
   }
 
   # Should probably move this off into a defined type at some point
-  if $ldaps_cert {
+  if $ldaps {
     unless $ldaps_server {
       fail("Class['confluence']: Invalid ldaps_server: ${ldaps_server}")
     }
@@ -74,16 +74,18 @@ class confluence (
       notify       => Exec['confluence::ldaps_cert::retrieve_cert'],
     }
     # Actual command is in the template
-    exec { 'confluence::ldaps_cert::retrieve_cert':
+    exec { 'confluence::ldaps::retrieve_cert':
       command      => template('confluence/openssl_pem_retrieve'),
       refreshonly  => true,
+      notify       => Java_ks['confluence::ldaps::certificate'],
     }
-    java_ks { 'confluence::ldaps_cert':
+    java_ks { 'confluence::ldaps::certificate':
       ensure       => latest,
       certificate  => "${certs_dir}/${ldaps_server}.pem",
       target       => $truststore,
       password     => $truststore_pass,
       trustcacerts => true,
+      require      => File["${certs_dir}/${ldaps_server}.pem"],
     }
   }
 }

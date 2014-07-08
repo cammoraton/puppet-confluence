@@ -36,13 +36,17 @@ describe 'confluence', :type => :class do
       it { should_not contain_class("apache::service") }
     end
     
-    describe "when ldaps_cert parameter is set to true"
+    describe "when ldaps parameters are set" do
       let :params do
         {
-          :ldaps_cert => true,
+          :ldaps        => true,
+          :ldaps_server => "ldap.example.com",
+          :certs_dir    => "/usr/share/confluence/pki",
         }
       end
-      
+      it { should contain_file("#{certs_dir}") }
+      it { should contain_file("#{certs_dir}/#{ldaps_server}.pem") }
+      it { should contain_java_ks('confluence::ldaps::certificate') }
     end
   end
 end
