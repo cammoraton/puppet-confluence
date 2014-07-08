@@ -20,8 +20,19 @@ describe 'confluence', :type => :class do
       'notify' => 'Class[Confluence::Service]') } 
       
     it { should contain_class("confluence::service") }
-
+    
     it { should contain_class("confluence::apache") }
     it { should contain_class("apache::service") } 
+      
+    describe "when standalone set" do
+      let :params do
+        {
+          :standalone => true,
+        }
+      end
+      
+      it { should_not contain_class("confluence::apache") }
+      it { should_not contain_class("apache::service") }
+    end
   end
 end
