@@ -29,7 +29,10 @@ class confluence::apache (
       default_vhost     => true,
       ssl               => true,
       docroot           => $::apache::docroot,
-      proxy_pass        => [ { } ],
+      proxy_pass        => [ {
+        :path => '/',
+        :url  => "ajp://127.0.0.1:${ajp_port}",
+      } ],
     }
     if $redirect_to_https {
       ::apache::vhost { 'default':
@@ -44,7 +47,10 @@ class confluence::apache (
         port            => $http_port,
         docroot         => $::apache::docroot,
         default_vhost   => true,
-        proxy_pass      => [ { } ],
+        proxy_pass      => [ {
+          :path => '/',
+          :url  => "ajp://127.0.0.1:${ajp_port}",
+        } ],
       }
     }
   } else {
@@ -52,7 +58,10 @@ class confluence::apache (
       port            => $http_port,
       docroot         => $::apache::docroot,
       default_vhost   => true,
-      proxy_pass      => [ { } ],
+      proxy_pass      => [ {
+        :path => '/',
+        :url  => "ajp://127.0.0.1:${ajp_port}",
+      } ],
     }
   }
 }
