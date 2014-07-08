@@ -20,6 +20,8 @@ class confluence::params {
     $servername = $::hostname
   }
 
+  $default_truststore = "${::java::java_home}/jre/lib/security/cacerts"
+
   if $::osfamily == 'Debian' {
   } else {
     fail("Class['confluence::params']: Unsupported osfamily: ${::osfamily}")

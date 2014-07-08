@@ -16,11 +16,12 @@ describe 'confluence', :type => :class do
       
     it { should contain_package("confluence").with(
       'notify' => 'Class[Confluence::Service]')}
-    
-    it { should contain_class("confluence::java").with(
-      'notify' => 'Class[Confluence::Service]') }  
-    it { should contain_class("confluence::apache") }
+    it { should contain_class("java").with(
+      'notify' => 'Class[Confluence::Service]') } 
+      
+    it { should contain_class("confluence::service") }
 
-    it { should contain_class("confluence::service") }   
+    it { should contain_class("confluence::apache") }
+    it { should contain_class("apache::service") } 
   end
 end
