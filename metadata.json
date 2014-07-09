@@ -264,7 +264,7 @@
     "spec/fixtures/modules/apt/spec/defines/ppa_spec.rb": "aaa2c1e762fe14d2b78d63133e04501c",
     "spec/fixtures/modules/apache/spec/classes/mod/python_spec.rb": "2b8079e833cbe6313435a72d9fc00cb9",
     "spec/fixtures/modules/apt/tests/key.pp": "371a695e1332d51a38e283a87be52798",
-    "spec/classes/confluence_spec.rb": "587a03eb662b59139e2772aed81be491",
+    "spec/classes/confluence_spec.rb": "64f04e432e19d1539fb11717c7fa5710",
     "spec/fixtures/modules/stdlib/spec/unit/puppet/provider/file_line/ruby_spec.rb": "e118a65a3eb0ccd3d1bf99d7bb010669",
     "spec/fixtures/modules/stdlib/lib/puppet/parser/functions/max.rb": "f652fd0b46ef7d2fbdb42b141f8fdd1d",
     "spec/fixtures/modules/stdlib/lib/puppet/parser/functions/is_hash.rb": "8c7d9a05084dab0389d1b779c8a05b1a",
