@@ -3,22 +3,18 @@ require 'spec_helper'
 describe 'confluence', :type => :class do
   context "on an Ubuntu OS" do
     let :facts do
-      {
-        :operatingsystem        => 'Ubuntu',
+      { :operatingsystem        => 'Ubuntu',
         :lsbdistcodename        => 'trusty',
         :osfamily               => 'Debian',
         :operatingsystemrelease => '14.04',
-        :concat_basedir         => '/tmp',
-      }
+        :concat_basedir         => '/tmp', }
     end
     let :params do
-      {
-        :server_xml_path        => '/tmp/server.xml'
-      }
+      { :server_xml_path        => '/tmp/server.xml' }
     end
     # This test fails - it gets commented out because
     # I'm a bad person.
-    #it { should include_class("confluence::params") }
+    it { should include_class("confluence::params") }
       
     it { should contain_package("confluence").with(
       'notify' => 'Class[Confluence::Service]')}

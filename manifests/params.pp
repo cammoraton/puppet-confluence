@@ -11,8 +11,11 @@
 # Sample Usage:
 #
 class confluence::params {
-  $user = 'confluence'
-  $group = 'confluence'
+  $service_name  = 'confluence'
+  $user          = 'confluence'
+  $group         = 'confluence'
+  $database_user = 'confluence'
+  $database_name = 'confluence'
 
   if($::fqdn) {
     $servername = $::fqdn

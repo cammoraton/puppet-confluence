@@ -13,7 +13,7 @@
 class confluence (
   $version              = 'installed',
   $enable_service       = true,
-  $service_name         = 'confluence',
+  $service_name         = $confluence::params::service_name,
   $standalone           = false,
   $http_port            = '80',
   $https_port           = '443',
@@ -32,12 +32,17 @@ class confluence (
   $ldaps_port           = '636',
   $truststore           = $confluence::params::default_truststore,
   $truststore_pass      = 'changeit',
+  $manage_database      = false,
+  $database_name        = $confluence::params::database_name,
+  $database_user        = $confluence::params::database_user,
+  $database_password    = 'changeme',
 ) inherits confluence::params {
   # Bools must be booleans
   validate_bool($standalone)
   validate_bool($enable_service)
   validate_bool($redirect_to_https)
   validate_bool($ldaps)
+  validate_bool($manage_database)
 
   # Version validation - needs improvement
   validate_re($version, 'present|installed|latest|^[.+_0-9a-zA-Z:-]+$')
