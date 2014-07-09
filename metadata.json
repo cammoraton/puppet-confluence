@@ -13,10 +13,10 @@
     "tests/init.pp": "dbdcc9265de42b7af5a4bb817b1596e0",
     "spec/spec_helper.rb": "c4a09629f92c8acab7b1c5fb193bb0f6",
     "README.markdown": "73288f540544418f869ab353e21fa2c2",
-    ".fixtures.yml": "b3569e0807caab159eae20f41774fe97",
-    "manifests/params.pp": "4183395e4245367ffe666948a0c535ab",
+    ".fixtures.yml": "d9ddb3770a889d1978efad8c6423e76c",
+    "manifests/params.pp": "413665e053e06b6d1e66285064aa3eb4",
     "templates/server.xml.erb": "6aeb04465b1646e2c5b8102b468fcf23",
-    "manifests/init.pp": "6633a3b71475128b5102b55fde4d4e8f",
+    "manifests/init.pp": "fef22c0b7e34012c291506a83a021703",
     "spec/classes/confluence_spec.rb": "b422e21bf62390c541836b0811e18866",
     "Gemfile.lock": "d2f53f0fc78cacc709d77ada08cc7a2c"
   },

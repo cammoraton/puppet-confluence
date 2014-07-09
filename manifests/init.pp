@@ -19,6 +19,10 @@ class confluence (
   $https_port           = '443',
   $redirect_to_https    = true,
   $ajp_port             = '8009',
+  $confluence_base_dir  = $confluence::params::confluence_base_dir,
+  $confluence_etc_dir   = $confluence::params::confluence_etc_dir,
+  $certs_dir            = $confluence::params::certs_dir,
+  $server_xml_path      = $confluence::params::server_xml_path,
   $servername           = $confluence::params::servername,
   $user                 = $confluence::params::user,
   $group                = $confluence::params::group,
@@ -41,6 +45,9 @@ class confluence (
   package { 'confluence':
     ensure => $confluence::version,
     notify => Class['Confluence::Service'],
+  }
+
+  file { $server_xml_path:
   }
 
   class { 'confluence::service':
