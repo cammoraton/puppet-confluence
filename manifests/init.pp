@@ -38,7 +38,7 @@ class confluence (
   validate_bool($enable_service)
   validate_bool($redirect_to_https)
   validate_bool($ldaps)
-  
+
   # Version validation - needs improvement
   validate_re($version, 'present|installed|latest|^[.+_0-9a-zA-Z:-]+$')
 
