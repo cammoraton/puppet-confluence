@@ -16,7 +16,7 @@
     ".fixtures.yml": "d9ddb3770a889d1978efad8c6423e76c",
     "manifests/params.pp": "413665e053e06b6d1e66285064aa3eb4",
     "templates/server.xml.erb": "e4464bd3b6c918de280f79e916536935",
-    "manifests/init.pp": "53de2fc1d295c1127fc1ddd47326417e",
+    "manifests/init.pp": "43a96a23a7cae651086bdbffedaffcc6",
     "spec/classes/confluence_spec.rb": "0fed8068544636b18ab7cb104f602861",
     "Gemfile.lock": "d2f53f0fc78cacc709d77ada08cc7a2c"
   },

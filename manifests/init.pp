@@ -33,10 +33,26 @@ class confluence (
   $truststore           = $confluence::params::default_truststore,
   $truststore_pass      = 'changeit',
 ) inherits confluence::params {
+  # Bools must be booleans
   validate_bool($standalone)
   validate_bool($enable_service)
-
+  validate_bool($redirect_to_https)
+  validate_bool($ldaps)
+  
+  # Version validation - needs improvement
   validate_re($version, 'present|installed|latest|^[.+_0-9a-zA-Z:-]+$')
+
+  # Ports should be digits
+  validate_re($http_port,  '^[0-9]+$')
+  validate_re($https_port, '^[0-9]+$')
+  validate_re($ajp_port,   '^[0-9]+$')
+  validate_re($ldaps_port, '^[0-9]+$')
+
+  # Paths should be absolute
+  validate_absolute_path($confluence_base_dir)
+  validate_absolute_path($confluence_etc_dir)
+  validate_absolute_path($server_xml_path)
+  validate_absolute_path($certs_dir)
 
   class { '::java':
     notify => Class['Confluence::Service'],
@@ -50,8 +66,8 @@ class confluence (
   file { $server_xml_path:
     ensure  => present,
     content => template('confluence/server.xml.erb'),
-    notify  => Class['Confluence::Service'],
     require => Package['confluence'],
+    notify  => Class['Confluence::Service'],
   }
 
   class { 'confluence::service':
