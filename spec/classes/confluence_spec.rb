@@ -12,8 +12,8 @@ describe 'confluence', :type => :class do
     let :params do
       { :server_xml_path        => '/tmp/server.xml' }
     end
-    # This test fails - it gets commented out because
-    # I'm a bad person.
+    # This test fails 
+    # - it gets commented out because I'm a bad person. -ncc
     # it { should include_class("confluence::params") }
       
     it { should contain_package("confluence").with(
