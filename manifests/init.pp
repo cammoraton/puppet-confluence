@@ -15,6 +15,7 @@ class confluence (
   $enable_service       = true,
   $service_name         = $confluence::params::service_name,
   $standalone           = false,
+  $manage_apache        = true,
   $http_port            = '80',
   $https_port           = '443',
   $redirect_to_https    = true,
@@ -32,7 +33,7 @@ class confluence (
   $ldaps_port           = '636',
   $truststore           = $confluence::params::default_truststore,
   $truststore_pass      = 'changeit',
-  $manage_database      = false,
+  $manage_database      = true,
   $database_name        = $confluence::params::database_name,
   $database_user        = $confluence::params::database_user,
   $database_password    = 'changeme',
@@ -43,6 +44,7 @@ class confluence (
   validate_bool($redirect_to_https)
   validate_bool($ldaps)
   validate_bool($manage_database)
+  validate_bool($manage_apache)
 
   # Version validation - needs improvement
   validate_re($version, 'present|installed|latest|^[.+_0-9a-zA-Z:-]+$')
@@ -116,6 +118,14 @@ class confluence (
       password     => $truststore_pass,
       trustcacerts => true,
       require      => File["${certs_dir}/${ldaps_server}.pem"],
+    }
+  }
+
+  if $manage_database {
+    class { 'confluence::postgresql':
+      database_name     => $database_name,
+      database_user     => $database_user,
+      database_password => $database_password,
     }
   }
 }

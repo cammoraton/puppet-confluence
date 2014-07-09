@@ -1,0 +1,13 @@
+
+Never enough tests
+Move ubuntu fact setup to shared example
+Beaker based acceptance tests
+- Blocking dependency on creating CCIS-packer machines
+Make interaction with keystore less... ick - at least move to define
+Fixup README.md
+
+At some point make not ubuntu specific.
+= Blocking dependency on fixing up confluence-packaging for EL
+
+Put this message in every todo until stops being amusing:
+Higgins needs Apollo and Zeus
