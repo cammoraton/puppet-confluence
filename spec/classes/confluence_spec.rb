@@ -55,6 +55,8 @@ describe 'confluence', :type => :class do
       let :params do
         { :manage_database => false, }
       end
+      it { should_not contain_class("confluence::postgresql") }
+      it { should_not contain_class("postgresql::server::service") }
     end
   end
 end
