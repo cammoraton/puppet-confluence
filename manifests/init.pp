@@ -75,7 +75,7 @@ class confluence (
     }
     # Actual command is in the template
     exec { 'confluence::ldaps::retrieve_cert':
-      command      => template('confluence/openssl_pem_retrieve'),
+      command      => template('confluence/openssl_pem_retrieve.erb'),
       refreshonly  => true,
       notify       => Java_ks['confluence::ldaps::certificate'],
     }

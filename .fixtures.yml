@@ -10,4 +10,4 @@ fixtures:
     stdlib: "puppetlabs/stdlib"
     java: "puppetlabs/java"
   symlinks:
-    confluence: "#{source_dir}"
+    my_module: "#{source_dir}"
