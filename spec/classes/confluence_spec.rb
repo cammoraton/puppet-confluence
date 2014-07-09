@@ -12,6 +12,35 @@ describe 'confluence', :type => :class do
     let :params do
       { :server_xml_path        => '/tmp/server.xml' }
     end
+    it { should compile }
+    # Validations
+    
+    # Booleans
+    # [ :standalone,
+    #  :redirect_to_https,
+    #  :ldaps,
+    #  :manage_database,
+    #  :manage_apache
+    #  ].each do |validate|
+        context "when :standalone param  is true" do
+          let(:params) { { :standalone => true } }
+          it { should compile }
+        end
+        context "when :standalone param is false" do
+          let(:params) { { :standalone => false } }
+          it { should compile }
+        end
+        context "when :standalone param  is not a boolean" do
+          let(:params) { { :standalone => "I'm a string!" } }
+        
+          it do
+            expect { 
+              should comple
+            }.to raise_error(Puppet::Error, /must be a boolean/)
+          end
+        end
+    #end
+    
     # This test fails 
     # - it gets commented out because I'm a bad person. -ncc
     # it { should include_class("confluence::params") }
