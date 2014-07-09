@@ -51,15 +51,14 @@ class confluence (
     ensure  => present,
     content => template('confluence/server.xml.erb'),
     notify  => Class['Confluence::Service'],
+    require => Package['confluence'],
   }
 
   class { 'confluence::service':
     enable_service => $enable_service,
   }
 
-  if $standalone {
-
-  } else {
+  unless $standalone {
     class { 'confluence::apache':
       http_port         => $http_port,
       https_port        => $https_port,
