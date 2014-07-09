@@ -11,6 +11,11 @@ describe 'confluence', :type => :class do
         :concat_basedir         => '/tmp',
       }
     end
+    let :params do
+      {
+        :server_xml_path        => '/tmp/server.xml'
+      }
+    end
     # This test fails - it gets commented out because
     # I'm a bad person.
     #it { should include_class("confluence::params") }
@@ -19,12 +24,14 @@ describe 'confluence', :type => :class do
       'notify' => 'Class[Confluence::Service]')}
     it { should contain_class("java").with(
       'notify' => 'Class[Confluence::Service]') } 
-      
+    it { should contain_file('/tmp/server.xml').with(
+      'notify' => 'Class[Confluence::Service]')}
+
     it { should contain_class("confluence::service") }
     
     it { should contain_class("confluence::apache") }
     it { should contain_class("apache::service") } 
-      
+    
     describe "when standalone parameter is set to true" do
       let :params do
         {

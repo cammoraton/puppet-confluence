@@ -19,17 +19,17 @@ class confluence (
   $https_port           = '443',
   $redirect_to_https    = true,
   $ajp_port             = '8009',
-  $confluence_base_dir  = $confluence::params::confluence_base_dir,
-  $confluence_etc_dir   = $confluence::params::confluence_etc_dir,
-  $certs_dir            = $confluence::params::certs_dir,
-  $server_xml_path      = $confluence::params::server_xml_path,
-  $servername           = $confluence::params::servername,
+  $shutdown_port        = '8005',
   $user                 = $confluence::params::user,
   $group                = $confluence::params::group,
+  $confluence_base_dir  = $confluence::params::confluence_base_dir,
+  $confluence_etc_dir   = $confluence::params::confluence_etc_dir,
+  $server_xml_path      = $confluence::params::server_xml_path,
+  $servername           = $confluence::params::servername,
+  $certs_dir            = $confluence::params::certs_dir,
   $ldaps                = false,
   $ldaps_server         = undef,
   $ldaps_port           = '636',
-  $certs_dir            = $confluence::params::certs_dir,
   $truststore           = $confluence::params::default_truststore,
   $truststore_pass      = 'changeit',
 ) inherits confluence::params {
@@ -48,6 +48,9 @@ class confluence (
   }
 
   file { $server_xml_path:
+    ensure  => present,
+    content => template('confluence/server.xml.erb'),
+    notify  => Class['Confluence::Service'],
   }
 
   class { 'confluence::service':
