@@ -17,7 +17,7 @@ class confluence::apache (
   $ajp_port          = $confluence::ajp_port,
   $servername        = $confluence::servername,
 ) {
-  #validate_bool($redirect_to_https)
+  validate_bool($redirect_to_https)
 
   class { '::apache': default_vhost => false }
   if $https_port {

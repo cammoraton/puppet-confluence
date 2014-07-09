@@ -11,15 +11,22 @@
 # Sample Usage:
 #
 class confluence::params {
-  $user = 'confluence'
-  $group = 'confluence'
+  $service_name  = 'confluence'
+  $user          = 'confluence'
+  $group         = 'confluence'
+  $database_user = 'confluence'
+  $database_name = 'confluence'
 
   if($::fqdn) {
     $servername = $::fqdn
   } else {
     $servername = $::hostname
   }
-  $certs_dir = '/usr/share/confluence/pki'
+  $confluence_base_dir = '/usr/share/confluence'
+  $confluence_etc_dir = "${confluence_base_dir}/conf"
+  $certs_dir = "${confluence_base_dir}/pki"
+
+  $server_xml_path = "${confluence_etc_dir}/server.xml"
 
   $default_truststore = "${::java::java_home}/jre/lib/security/cacerts"
 
