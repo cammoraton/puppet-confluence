@@ -63,6 +63,12 @@ class confluence (
   validate_absolute_path($server_xml_path)
   validate_absolute_path($certs_dir)
 
+  group { $group: ensure => present } ->
+  user { $user: 
+    ensure => present, 
+    group => $group
+  } 
+ 
   class { '::java':
     notify => Class['Confluence::Service'],
   }

@@ -1,6 +1,6 @@
-name    'neuccis-confluence'
+name    'ccis-confluence'
 version '0.1.0'
-source ''
+source 'https://github.ccs.neu.edu:ncc/ccis-packer-templates.git'
 author 'ncc@ccs.neu.edu'
 license ''
 summary ''
