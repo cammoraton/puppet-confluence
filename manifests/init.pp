@@ -38,6 +38,7 @@ class confluence (
   $certs_dir            = $confluence::params::certs_dir,
   $ldaps                = false,
   $ldaps_server         = undef,
+  $ldaps_certificate    = undef,
   $ldaps_port           = '636',
   $truststore           = undef,
   $truststore_pass      = 'changeit',
@@ -80,20 +81,6 @@ class confluence (
     notify => Class['Confluence::Service'],
   }
 
-  # Truststore - I hate how I'm doing this
-  if $truststore == undef {
-    if $::osfamily == 'Debian' {
-      $actual_truststore  = "${::java::java_home}/jre/lib/security/cacerts"
-    } elsif $::osfamily == 'RedHat' {
-      # TODO: fix this
-      $actual_truststore  = undef
-    } else {
-      fail("Class['confluence']: Unsupported osfamily: ${::osfamily}")
-    }
-  } else {
-    $actual_truststore = $truststore
-  }
-
   package { 'confluence':
     ensure => $confluence::version,
     notify => Class['Confluence::Service'],
@@ -129,14 +116,34 @@ class confluence (
   # Now a define!
   if $ldaps {
     if $ldaps_server == undef {
-      fail("Class['confluence']: Must define ldaps server when ldaps set to ${ldaps}")
+      fail('Class[\'confluence\']: Must define ldap server')
+    }
+    # Truststore - I hate how I'm doing this
+    if $truststore == undef {
+      if $::osfamily == 'Debian' {
+        $actual_truststore  = "${::java::java_home}/jre/lib/security/cacerts"
+      } elsif $::osfamily == 'RedHat' {
+        # TODO: fix this
+        $actual_truststore  = undef
+      } else {
+        fail("Class['confluence']: Unsupported osfamily: ${::osfamily}")
+      }
+    } else {
+      $actual_truststore = $truststore
     }
 
+    # Create the cert-store
+    file { $certs_dir:
+      ensure          => directory,
+      owner           => $user,
+      group           => $user
+    }
     confluence::ldaps_server { $ldaps_server:
       ldaps_port      => $ldaps_port,
       truststore      => $actual_truststore,
       truststore_pass => $truststore_pass,
       certs_dir       => $certs_dir,
+      certificate     => $ldaps_certificate,
       require         => File[$certs_dir]
     }
   }
