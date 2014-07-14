@@ -32,8 +32,8 @@ class confluence::apache (
 
   # This is kind of half-baked
   if $manage_apache {
-    class { '::apache': 
-      default_vhost => false, 
+    class { '::apache':
+      default_vhost     => false,
       default_ssl_vhost => false }
   }
   if $https_port {
