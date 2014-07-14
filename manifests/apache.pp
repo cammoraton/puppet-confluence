@@ -35,6 +35,7 @@ class confluence::apache (
 
     ::apache::vhost { "${vhost_name}-ssl":
       port              => $https_port,
+      servername        => $servername,
       default_vhost     => $default_vhost,
       ssl               => true,
       docroot           => $::apache::docroot,
@@ -46,6 +47,7 @@ class confluence::apache (
     if $redirect_to_https {
       ::apache::vhost { $vhost_name:
         port            => $http_port,
+        servername      => $servername,
         docroot         => $::apache::docroot,
         default_vhost   => $default_vhost,
         redirect_status => 'permanent',
@@ -54,6 +56,7 @@ class confluence::apache (
     } else {
       ::apache::vhost { $vhost_name:
         port            => $http_port,
+        servername      => $servername,
         docroot         => $::apache::docroot,
         default_vhost   => $default_vhost,
         proxy_pass      => [ {
@@ -65,6 +68,7 @@ class confluence::apache (
   } else {
     ::apache::vhost { $vhost_name:
       port            => $http_port,
+      servername      => $servername,
       docroot         => $::apache::docroot,
       default_vhost   => $default_vhost,
       proxy_pass      => [ {
