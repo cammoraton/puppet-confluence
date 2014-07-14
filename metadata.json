@@ -1,26 +1,26 @@
 {
   "author": "ncc@ccs.neu.edu",
   "checksums": {
-    "Rakefile": "d921c2344836cae12829a0e6de125d89",
+    "Rakefile": "c41320df41cd67d5f8ab5e40213f1cd6",
     "templates/openssl_pem_retrieve.erb": "777879f69c137f162167300bf1f1a599",
-    "Gemfile": "c4926074d389dc1e91dd76fc380206e2",
+    "Gemfile": "9e12b441108ff616f70dad524fe91574",
     "manifests/apt.pp": "b09126c25404eaf5bde0f38fc6350054",
     "manifests/service.pp": "3a61114f66b7aba9dd39abc958141538",
     "spec/classes/params_spec.rb": "b4e8475d001f70b987664b9ef82a0154",
     "Modulefile": "230cec1e929b5c0c541b2e0ea2849b5a",
     "spec/spec.opts": "a600ded995d948e393fbe2320ba8e51c",
-    "manifests/apache.pp": "345bb7fd3fc40e5a52d066e992023253",
+    "manifests/apache.pp": "3ef4f7422ab71764afaf49603f3e587e",
     "tests/init.pp": "dbdcc9265de42b7af5a4bb817b1596e0",
     "spec/spec_helper.rb": "5d2a35a2c93b2a74f7dadff093e6e87a",
     "README.markdown": "70578c821fcb4fa741dacf6d29eda330",
     ".fixtures.yml": "d9ddb3770a889d1978efad8c6423e76c",
     "manifests/params.pp": "56c19226e750dba003138e2ef688e22b",
-    "manifests/postgresql.pp": "73b8821e3d53da3b36ff6855eee09771",
+    "manifests/postgresql.pp": "673534471b244c05cf3a722e7b066ea7",
     "TODO": "465f749b88083f0ee0700dbfbc8f6843",
     "templates/server.xml.erb": "e4464bd3b6c918de280f79e916536935",
-    "manifests/init.pp": "946f180e25beb9dc40281d7bcefcc235",
-    "spec/classes/confluence_spec.rb": "08a239df3d9da21cf765c12c424fa5a3",
-    "Gemfile.lock": "d2f53f0fc78cacc709d77ada08cc7a2c"
+    "manifests/init.pp": "aac69ce1a3057812ac19132f66d82525",
+    "spec/classes/confluence_spec.rb": "64f04e432e19d1539fb11717c7fa5710",
+    "Gemfile.lock": "8be9b34282a46e473ae1b50701374d02"
   },
   "dependencies": [
     {

@@ -16,6 +16,8 @@ class confluence (
   $service_name         = $confluence::params::service_name,
   $standalone           = false,
   $manage_apache        = true,
+  $default_vhost        = true,
+  $vhost_name           = 'default',
   $http_port            = '80',
   $https_port           = '443',
   $redirect_to_https    = true,
@@ -60,6 +62,12 @@ class confluence (
   validate_absolute_path($confluence_etc_dir)
   validate_absolute_path($server_xml_path)
   validate_absolute_path($certs_dir)
+
+#  group { $group: ensure => present } ->
+#  user { $user:
+#    ensure => present,
+#    group  => $group
+#  }
 
   class { '::java':
     notify => Class['Confluence::Service'],

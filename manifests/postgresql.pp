@@ -26,7 +26,5 @@ class confluence::postgresql (
     postgresql::server::database { $database_name:
       owner => $database_user,
     }
-  } else {
-    notify('')
   }
 }
