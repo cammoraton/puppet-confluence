@@ -80,19 +80,7 @@ class confluence (
     notify => Class['Confluence::Service'],
   }
 
-  # Truststore - I hate how I'm doing this
-  if $truststore == undef {
-    if $::osfamily == 'Debian' {
-      $actual_truststore  = "${::java::java_home}/jre/lib/security/cacerts"
-    } elsif $::osfamily == 'RedHat' {
-      # TODO: fix this
-      $actual_truststore  = undef
-    } else {
-      fail("Class['confluence']: Unsupported osfamily: ${::osfamily}")
-    }
-  } else {
-    $actual_truststore = $truststore
-  }
+  
 
   package { 'confluence':
     ensure => $confluence::version,
@@ -131,6 +119,22 @@ class confluence (
     if $ldaps_server == undef {
       fail("Class['confluence']: Must define ldaps server when ldaps set to ${ldaps}")
     }
+    # Truststore - I hate how I'm doing this
+    if $truststore == undef {
+      if $::osfamily == 'Debian' {
+        $actual_truststore  = "${::java::java_home}/jre/lib/security/cacerts"
+      } elsif $::osfamily == 'RedHat' {
+        # TODO: fix this
+        $actual_truststore  = undef
+      } else {
+        fail("Class['confluence']: Unsupported osfamily: ${::osfamily}")
+      }
+    } else {
+      $actual_truststore = $truststore
+    }
+    # Create the truststore if it doesn't exist
+
+    # And the cert temp space
 
     confluence::ldaps_server { $ldaps_server:
       ldaps_port      => $ldaps_port,
