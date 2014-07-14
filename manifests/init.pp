@@ -39,7 +39,7 @@ class confluence (
   $ldaps                = false,
   $ldaps_server         = undef,
   $ldaps_port           = '636',
-  $truststore           = $confluence::params::truststore,
+  $truststore           = undef,
   $truststore_pass      = 'changeit',
   $manage_database      = true,
   $database_name        = $confluence::params::database_name,
@@ -80,6 +80,20 @@ class confluence (
     notify => Class['Confluence::Service'],
   }
 
+  # Truststore - I hate how I'm doing this
+  if $truststore == undef {
+    if $::osfamily == 'Debian' {
+      $actual_truststore  = "${::java::java_home}/jre/lib/security/cacerts"
+    } elsif $::osfamily == 'RedHat' {
+      # TODO: fix this
+      $actual_truststore  = undef
+    } else {
+      fail("Class['confluence']: Unsupported osfamily: ${::osfamily}")
+    }
+  } else {
+    $actual_truststore = $truststore
+  }
+
   package { 'confluence':
     ensure => $confluence::version,
     notify => Class['Confluence::Service'],
@@ -103,36 +117,27 @@ class confluence (
       redirect_to_https => $redirect_to_https,
       ajp_port          => $ajp_port,
       servername        => $servername,
+      ssl_cert          => $ssl_cert,
+      ssl_key           => $ssl_key,
+      ssl_chain         => $ssl_chain,
+      ssl_ca            => $ssl_ca,
+      ssl_crl_path      => $ssl_crl_path,
+      ssl_crl           => $ssl_crl
     }
   }
 
-  # Should probably move this off into a defined type at some point
+  # Now a define!
   if $ldaps {
-    unless $ldaps_server {
-      fail("Class['confluence']: Invalid ldaps_server: ${ldaps_server}")
+    if $ldaps_server == undef {
+      fail("Class['confluence']: Must define ldaps server when ldaps set to ${ldaps}")
     }
-    file { $certs_dir:
-      ensure       => directory,
-      owner        => $user,
-      group        => $group,
-    } ->
-    file { "${certs_dir}/${ldaps_server}.pem":
-      ensure       => present,
-      notify       => Exec['confluence::ldaps_cert::retrieve_cert'],
-    }
-    # Actual command is in the template
-    exec { 'confluence::ldaps::retrieve_cert':
-      command      => template('confluence/openssl_pem_retrieve.erb'),
-      refreshonly  => true,
-      notify       => Java_ks['confluence::ldaps::certificate'],
-    }
-    java_ks { 'confluence::ldaps::certificate':
-      ensure       => latest,
-      certificate  => "${certs_dir}/${ldaps_server}.pem",
-      target       => $truststore,
-      password     => $truststore_pass,
-      trustcacerts => true,
-      require      => File["${certs_dir}/${ldaps_server}.pem"],
+
+    confluence::ldaps_server { $ldaps_server:
+      ldaps_port      => $ldaps_port,
+      truststore      => $actual_truststore,
+      truststore_pass => $truststore_pass,
+      certs_dir       => $certs_dir,
+      require         => File[$certs_dir]
     }
   }
 
