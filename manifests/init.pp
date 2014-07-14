@@ -39,7 +39,7 @@ class confluence (
   $ldaps                = false,
   $ldaps_server         = undef,
   $ldaps_port           = '636',
-  $truststore           = $confluence::params::truststore,
+  $truststore           = undef,
   $truststore_pass      = 'changeit',
   $manage_database      = true,
   $database_name        = $confluence::params::database_name,
@@ -80,6 +80,20 @@ class confluence (
     notify => Class['Confluence::Service'],
   }
 
+  # Truststore - I hate how I'm doing this
+  if $truststore == undef {
+    if $::osfamily == 'Debian' {
+      $actual_truststore  = "${::java::java_home}/jre/lib/security/cacerts"
+    } elsif $::osfamily == 'RedHat' {
+      # TODO: fix this
+      $actual_truststore  = undef
+    } else {
+      fail("Class['confluence']: Unsupported osfamily: ${::osfamily}")
+    }
+  } else {
+    $actual_truststore = $truststore
+  }
+
   package { 'confluence':
     ensure => $confluence::version,
     notify => Class['Confluence::Service'],
@@ -108,7 +122,7 @@ class confluence (
 
   # Should probably move this off into a defined type at some point
   if $ldaps {
-    unless $ldaps_server {
+    if $ldaps_server == undef {
       fail("Class['confluence']: Invalid ldaps_server: ${ldaps_server}")
     }
     file { $certs_dir:
@@ -118,18 +132,18 @@ class confluence (
     } ->
     file { "${certs_dir}/${ldaps_server}.pem":
       ensure       => present,
-      notify       => Exec['confluence::ldaps_cert::retrieve_cert'],
+      notify       => Exec["confluence::ldaps::${ldaps_server}::retrieve_cert"],
     }
     # Actual command is in the template
-    exec { 'confluence::ldaps::retrieve_cert':
+    exec { "confluence::ldaps::${ldaps_server}::retrieve_cert":
       command      => template('confluence/openssl_pem_retrieve.erb'),
       refreshonly  => true,
-      notify       => Java_ks['confluence::ldaps::certificate'],
+      notify       => Java_ks["confluence::ldaps::${ldaps_server}::certificate"],
     }
-    java_ks { 'confluence::ldaps::certificate':
+    java_ks { "confluence::ldaps::${ldaps_server}::certificate":
       ensure       => latest,
       certificate  => "${certs_dir}/${ldaps_server}.pem",
-      target       => $truststore,
+      target       => $actual_truststore,
       password     => $truststore_pass,
       trustcacerts => true,
       require      => File["${certs_dir}/${ldaps_server}.pem"],

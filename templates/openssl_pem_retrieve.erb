@@ -1,2 +1,2 @@
-openssl s_client -showcerts -connect <%= @ldaps_server %>:<%= @ldaps_port %> </dev/null | \
+/usr/bin/openssl s_client -showcerts -connect <%= @ldaps_server %>:<%= @ldaps_port %> </dev/null | \
 sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > <%= @certs_dir %>/<%= @ldaps_server %>.pem
