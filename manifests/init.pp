@@ -126,33 +126,18 @@ class confluence (
     }
   }
 
-  # Should probably move this off into a defined type at some point
+  # Now a define!
   if $ldaps {
     if $ldaps_server == undef {
-      fail("Class['confluence']: Invalid ldaps_server: ${ldaps_server}")
+      fail("Class['confluence']: Must define ldaps server when ldaps set to ${ldaps}")
     }
-    file { $certs_dir:
-      ensure       => directory,
-      owner        => $user,
-      group        => $group,
-    } ->
-    file { "${certs_dir}/${ldaps_server}.pem":
-      ensure       => present,
-      notify       => Exec["confluence::ldaps::${ldaps_server}::retrieve_cert"],
-    }
-    # Actual command is in the template
-    exec { "confluence::ldaps::${ldaps_server}::retrieve_cert":
-      command      => template('confluence/openssl_pem_retrieve.erb'),
-      refreshonly  => true,
-      notify       => Java_ks["confluence::ldaps::${ldaps_server}::certificate"],
-    }
-    java_ks { "confluence::ldaps::${ldaps_server}::certificate":
-      ensure       => latest,
-      certificate  => "${certs_dir}/${ldaps_server}.pem",
-      target       => $actual_truststore,
-      password     => $truststore_pass,
-      trustcacerts => true,
-      require      => File["${certs_dir}/${ldaps_server}.pem"],
+
+    confluence::ldaps_server { $ldaps_server:
+      ldaps_port      => $ldaps_port,
+      truststore      => $actual_truststore,
+      truststore_pass => $truststore_pass,
+      certs_dir       => $certs_dir,
+      require         => File[$certs_dir]
     }
   }
 
