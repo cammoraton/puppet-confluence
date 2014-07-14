@@ -22,7 +22,7 @@ class confluence::postgresql (
     class { '::postgresql::server': }
     postgresql::server::role { $database_user:
       password_hash => $database_password
-    }
+    } ->
     postgresql::server::database { $database_name:
       owner => $database_user,
     }
