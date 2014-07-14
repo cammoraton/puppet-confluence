@@ -31,9 +31,21 @@ class confluence::params {
     notify => Class['Confluence::Service'],
   }
 
-  $default_truststore = "${::java::java_home}/jre/lib/security/cacerts"
-
   if $::osfamily == 'Debian' {
+    $ssl_cert = '/etc/ssl/certs/ssl-cert-snakeoil.pem'
+    $ssl_key  = '/etc/ssl/private/ssl-cert-snakeoil.key'
+    $ssl_certs_dir    = '/etc/ssl/certs'
+    
+    $default_truststore = "${::java::java_home}/jre/lib/security/cacerts"
+  } elsif $::osfamily == 'RedHat' {
+    $ssl_cert     = '/etc/pki/tls/certs/localhost.crt'
+    $ssl_key      = '/etc/pki/tls/private/localhost.key'
+    $ssl_certs_dir        = $distrelease ? {
+      '5'     => '/etc/pki/tls/certs',
+      default => '/etc/ssl/certs',
+    }
+    # TODO: fix this
+    $default_truststore = undef
   } else {
     fail("Class['confluence::params']: Unsupported osfamily: ${::osfamily}")
   }
