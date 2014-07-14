@@ -19,7 +19,7 @@ class confluence::postgresql (
   validate_bool($manage_database)
 
   if $manage_database {
-    class { '::postgresql::server': }
+    class { '::postgresql::server': } ->
     postgresql::server::role { $database_user:
       password_hash => $database_password
     } ->
