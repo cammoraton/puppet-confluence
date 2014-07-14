@@ -17,7 +17,7 @@ class confluence (
   $standalone           = false,
   $manage_apache        = true,
   $default_vhost        = true,
-  $vhost_name           = 'default',
+  $vhost_name           = 'def',
   $http_port            = '80',
   $https_port           = '443',
   $redirect_to_https    = true,
@@ -69,9 +69,6 @@ class confluence (
 #    group  => $group
 #  }
 
-  class { '::java':
-    notify => Class['Confluence::Service'],
-  }
 
   package { 'confluence':
     ensure => $confluence::version,

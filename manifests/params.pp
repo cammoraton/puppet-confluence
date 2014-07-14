@@ -27,6 +27,9 @@ class confluence::params {
   $certs_dir = "${confluence_base_dir}/pki"
 
   $server_xml_path = "${confluence_etc_dir}/server.xml"
+  class { '::java':
+    notify => Class['Confluence::Service'],
+  }
 
   $default_truststore = "${::java::java_home}/jre/lib/security/cacerts"
 
