@@ -1,6 +1,7 @@
 /metadata.json
 /Gemfile.lock
 /Puppetfile.lock
+/pkg
 /.librarian
 /.tmp
 /.project

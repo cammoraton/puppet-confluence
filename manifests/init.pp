@@ -17,9 +17,15 @@ class confluence (
   $standalone           = false,
   $manage_apache        = true,
   $default_vhost        = true,
-  $vhost_name           = 'default',
+  $vhost_name           = 'def',
   $http_port            = '80',
   $https_port           = '443',
+  $ssl_cert             = $confluence::params::default_ssl_cert,
+  $ssl_key              = $confluence::params::default_ssl_key,
+  $ssl_chain            = undef,
+  $ssl_ca               = undef,
+  $ssl_crl_path         = undef,
+  $ssl_crl              = undef,
   $redirect_to_https    = true,
   $ajp_port             = '8009',
   $shutdown_port        = '8005',
@@ -33,7 +39,7 @@ class confluence (
   $ldaps                = false,
   $ldaps_server         = undef,
   $ldaps_port           = '636',
-  $truststore           = $confluence::params::default_truststore,
+  $truststore           = $confluence::params::truststore,
   $truststore_pass      = 'changeit',
   $manage_database      = true,
   $database_name        = $confluence::params::database_name,
@@ -69,6 +75,7 @@ class confluence (
 #    group  => $group
 #  }
 
+  # Set up java
   class { '::java':
     notify => Class['Confluence::Service'],
   }
