@@ -38,6 +38,7 @@ class confluence (
   $certs_dir            = $confluence::params::certs_dir,
   $ldaps                = false,
   $ldaps_server         = undef,
+  $ldaps_certificate    = undef,
   $ldaps_port           = '636',
   $truststore           = undef,
   $truststore_pass      = 'changeit',
@@ -130,16 +131,7 @@ class confluence (
     } else {
       $actual_truststore = $truststore
     }
-    # Create the truststore if it doesn't exist (EXPERIMENTAL)
-    file { $actual_truststore:
-      ensure => present,
-      notify => Exec['confluence::create_truststore']
-    }
-    exec { 'confluence::create_truststore':
-      refreshonly     => true,
-      command         => template("confluence/keytool_create.erb"),
-      notify          => Confluence::Ldaps_server[$ldaps_server]
-    }
+
     # Create the cert-store
     file { $certs_dir:
       ensure          => directory,
@@ -151,6 +143,7 @@ class confluence (
       truststore      => $actual_truststore,
       truststore_pass => $truststore_pass,
       certs_dir       => $certs_dir,
+      certificate     => $ldaps_certificate,
       require         => File[$certs_dir]
     }
   }
