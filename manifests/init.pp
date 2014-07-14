@@ -80,8 +80,6 @@ class confluence (
     notify => Class['Confluence::Service'],
   }
 
-  
-
   package { 'confluence':
     ensure => $confluence::version,
     notify => Class['Confluence::Service'],
@@ -117,7 +115,7 @@ class confluence (
   # Now a define!
   if $ldaps {
     if $ldaps_server == undef {
-      fail("Class['confluence']: Must define ldaps server when ldaps set to ${ldaps}")
+      fail('Class[\'confluence\']: Must define ldap server')
     }
     # Truststore - I hate how I'm doing this
     if $truststore == undef {
