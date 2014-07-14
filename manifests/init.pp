@@ -85,7 +85,6 @@ class confluence (
   if $truststore == undef {
     if $::osfamily == 'Debian' {
       $truststore = "${::java::java_home}/jre/lib/security/cacerts"
-    
     } elsif $::osfamily == 'RedHat' {
       # TODO: fix this
       $truststore = undef
@@ -94,7 +93,7 @@ class confluence (
       fail("Class['confluence']: Unsupported osfamily: ${::osfamily}")
     }
   }
-  
+
   package { 'confluence':
     ensure => $confluence::version,
     notify => Class['Confluence::Service'],
