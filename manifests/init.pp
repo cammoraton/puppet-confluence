@@ -130,10 +130,22 @@ class confluence (
     } else {
       $actual_truststore = $truststore
     }
-    # Create the truststore if it doesn't exist
-
-    # And the cert temp space
-
+    # Create the truststore if it doesn't exist (EXPERIMENTAL)
+    file { $actual_truststore:
+      ensure => present,
+      notify => Exec['confluence::create_truststore']
+    }
+    exec { 'confluence::create_truststore':
+      refreshonly     => true,
+      command         => template("confluence/keytool_create.erb"),
+      notify          => Confluence::Ldaps_server[$ldaps_server]
+    }
+    # Create the cert-store
+    file { $certs_dir:
+      ensure          => directory,
+      owner           => $user,
+      group           => $user
+    }
     confluence::ldaps_server { $ldaps_server:
       ldaps_port      => $ldaps_port,
       truststore      => $actual_truststore,
