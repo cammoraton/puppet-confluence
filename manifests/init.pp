@@ -117,6 +117,12 @@ class confluence (
       redirect_to_https => $redirect_to_https,
       ajp_port          => $ajp_port,
       servername        => $servername,
+      ssl_cert          => $ssl_cert,
+      ssl_key           => $ssl_key,
+      ssl_chain         => $ssl_chain,
+      ssl_ca            => $ssl_ca,
+      ssl_crl_path      => $ssl_crl_path,
+      ssl_crl           => $ssl_crl
     }
   }
 
