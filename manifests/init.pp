@@ -39,7 +39,7 @@ class confluence (
   $ldaps                = false,
   $ldaps_server         = undef,
   $ldaps_port           = '636',
-  $truststore           = undef,
+  $truststore           = $confluence::params::truststore,
   $truststore_pass      = 'changeit',
   $manage_database      = true,
   $database_name        = $confluence::params::database_name,
@@ -78,20 +78,6 @@ class confluence (
   # Set up java
   class { '::java':
     notify => Class['Confluence::Service'],
-  }
-
-  # I wanted to keep this in params but while it worked
-  # it complained about java class not being included yet.
-  if $truststore == undef {
-    if $::osfamily == 'Debian' {
-      $truststore = "${::java::java_home}/jre/lib/security/cacerts"
-    } elsif $::osfamily == 'RedHat' {
-      # TODO: fix this
-      $truststore = undef
-    } else {
-      # This isn't likely to happen, but hey
-      fail("Class['confluence']: Unsupported osfamily: ${::osfamily}")
-    }
   }
 
   package { 'confluence':
