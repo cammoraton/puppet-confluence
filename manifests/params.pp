@@ -32,6 +32,8 @@ class confluence::params {
     $ssl_cert         = '/etc/ssl/certs/ssl-cert-snakeoil.pem'
     $ssl_key          = '/etc/ssl/private/ssl-cert-snakeoil.key'
     $ssl_certs_dir    = '/etc/ssl/certs'
+    $package_source   = 'apt'
+    $tomcat_package   = 'tomcat6-user'
   } elsif $::osfamily == 'RedHat' {
     $ssl_cert         = '/etc/pki/tls/certs/localhost.crt'
     $ssl_key          = '/etc/pki/tls/private/localhost.key'
@@ -39,6 +41,7 @@ class confluence::params {
       '5'     => '/etc/pki/tls/certs',
       default => '/etc/ssl/certs',
     }
+    $package_source   = 'yum'
   } else {
     fail("Class['confluence::params']: Unsupported osfamily: ${::osfamily}")
   }
