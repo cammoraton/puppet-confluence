@@ -42,8 +42,7 @@ describe 'confluence', :type => :class do
     # - it gets commented out because I'm a bad person. -ncc
     # it { should include_class("confluence::params") }
       
-    it { should contain_package("confluence").with(
-      'notify' => 'Class[Confluence::Service]')}
+    it { should_not contain_package("confluence") }
     it { should contain_class("java").with(
       'notify' => 'Class[Confluence::Service]') } 
     it { should contain_file('/tmp/server.xml').with(

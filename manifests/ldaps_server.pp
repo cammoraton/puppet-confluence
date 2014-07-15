@@ -32,5 +32,6 @@ define confluence::ldaps_server (
     password     => $truststore_pass,
     trustcacerts => true,
     require      => File["${certs_dir}/${name}.pem"],
+    notify       => Class['Confluence::Service']
   }
 }

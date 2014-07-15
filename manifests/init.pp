@@ -46,6 +46,17 @@ class confluence (
   $database_name        = $confluence::params::database_name,
   $database_user        = $confluence::params::database_user,
   $database_password    = 'changeme',
+  $manage_package       = false,
+  $package_source       = $confluence::params::package_source,
+  $apt_source_name      = undef,
+  $apt_source_location  = undef,
+  $apt_source_repos     = undef,
+  $apt_source_release   = $::lsbdistrelease,
+  $apt_manage_key       = false,
+  $apt_key_name         = undef,
+  $apt_key              = undef,
+  $apt_key_server       = undef,
+  $package_file_source  = undef
 ) inherits confluence::params {
   # Bools must be booleans
   validate_bool($standalone)
@@ -54,9 +65,12 @@ class confluence (
   validate_bool($ldaps)
   validate_bool($manage_database)
   validate_bool($manage_apache)
+  validate_bool($manage_package)
 
   # Version validation - needs improvement
   validate_re($version, 'present|installed|latest|^[.+_0-9a-zA-Z:-]+$')
+
+  validate_re($package_source, 'apt|yum|file')
 
   # Ports should be digits
   validate_re($http_port,  '^[0-9]+$')
@@ -81,15 +95,50 @@ class confluence (
     notify => Class['Confluence::Service'],
   }
 
-  package { 'confluence':
-    ensure => $confluence::version,
-    notify => Class['Confluence::Service'],
+  if $manage_package {
+    case $package_source {
+      'apt': {
+        if $apt_source_name == undef {
+          fail('Class[\'confluence\']: apt_source_name undefined')
+        }
+        if $apt_source_repos == undef {
+          fail('Class[\'confluence\']: apt_source_repos undefined')
+        }
+        if $apt_source_location == undef {
+          fail('Class[\'confluence\']: apt_source_location undefined')
+        }
+        confluence::apt { $apt_source_name:
+          source_name     => $apt_source_name,
+          source_location => $apt_source_location,
+          source_repos    => $apt_source_repos,
+          manage_key      => $apt_manage_key,
+          key_name        => $apt_key_name,
+          key             => $apt_key,
+          key_server      => $apt_key_server,
+          notify          => Package['confluence']
+        }
+      }
+      'yum': {
+        fail('Class[\'confluence\']: Yum not yet supported')
+      }
+      'file': {
+        fail('Class[\'confluence\']: File not yet supported')
+      }
+      default: {
+        fail("Class['confluence']: Unrecognized package type ${package_source}")
+      }
+    }
+
+    package { 'confluence':
+      ensure => $confluence::version,
+      notify => [ Class['Confluence::Service'],
+                  File[ $server_xml_path ] ]
+    }
   }
 
   file { $server_xml_path:
     ensure  => present,
     content => template('confluence/server.xml.erb'),
-    require => Package['confluence'],
     notify  => Class['Confluence::Service'],
   }
 
