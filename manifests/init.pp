@@ -51,6 +51,7 @@ class confluence (
   $apt_source_name      = undef,
   $apt_source_location  = undef,
   $apt_source_repos     = undef,
+  $apt_key_source       = undef,
   $apt_source_release   = $::lsbdistrelease,
   $apt_manage_key       = false,
   $apt_key              = undef,
@@ -108,6 +109,7 @@ class confluence (
         confluence::apt { $apt_source_name:
           location        => $apt_source_location,
           repo            => $apt_source_repos,
+          source          => $apt_key_source,
           manage_key      => $apt_manage_key,
           key             => $apt_key,
           notify          => Package['confluence']
