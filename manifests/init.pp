@@ -53,9 +53,7 @@ class confluence (
   $apt_source_repos     = undef,
   $apt_source_release   = $::lsbdistrelease,
   $apt_manage_key       = false,
-  $apt_key_name         = undef,
   $apt_key              = undef,
-  $apt_key_server       = undef,
   $package_file_source  = undef
 ) inherits confluence::params {
   # Bools must be booleans
