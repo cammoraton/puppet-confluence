@@ -22,28 +22,24 @@ describe 'confluence', :type => :class do
       :manage_database,
       :manage_apache
     ].each do |validate|
-      context "when #{validate} param  is true" do
-        let(:params) { { :package_source => 'none',
-                         validate.to_sym => true } }
-        it { should contain_class("confluence") }
-        # it { expect { should contain_class("confluence") }.to_not raise_error }#(Puppet::Error, /is not a boolean/) }
-      end
-      context "when #{validate} param is false" do
-        let(:params) { { :package_source => 'none',
-                         validate.to_sym => true } }
-        it { should contain_class("confluence") }
-        #it { expect { should contain_class("confluence") }.to_not raise_error }#(Puppet::Error, /is not a boolean/) }
-      end
       context "when #{validate} param is not a boolean" do
         let(:params) { { validate.to_sym => "I'm a string!" } }
         
-        #it { expect{ should contain_class("confluence") }.to raise_error }#(Puppet::Error, /is not a boolean/) }
+        it { expect { should contain_class("confluence") }.to raise_error(Puppet::Error, /is not a boolean/) }
       end
     end
+
+    # This is never officially mentioned as deprecated but it
+    # appears deprecated
+    # it { should compile }
     
+    # Should compile appears to be deprecated - this is
+    # a rough approx
+    it { should contain_class("confluence") }
+
     # This test fails 
     # - it gets commented out because I'm a bad person. -ncc
-    # it { should include_class("confluence::params") }
+    #it { should include_class("confluence::params") }
       
     it { should contain_package("confluence") }
     it { should contain_class("java").with(
