@@ -14,7 +14,7 @@ define confluence::apt (
   $source_name,
   $source_location,
   $source_repos,
-  $source_release = $::lsbdistrelease,
+  $source_release = $::lsbdistcodename,
   $manage_key     = false,
   $key_name       = undef,
   $key            = undef,

@@ -37,7 +37,7 @@ class confluence::apache (
       default_ssl_vhost => false }
   }
   if $https_port {
-    class { '::apache::mod::ssl': }
+    include apache::mod::ssl
     apache::mod { 'proxy_ajp': }
     ensure_resource('apache::listen', $https_port, {})
 
