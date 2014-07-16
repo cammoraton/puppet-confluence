@@ -1,6 +1,6 @@
-# Class: confluence::apt
+# Type: confluence::apt
 #
-# This class manages the apt source for the confluence package
+#
 #
 # Parameters:
 #
@@ -11,45 +11,43 @@
 # Sample Usage:
 #
 define confluence::apt (
-  $source_name,
-  $source_location,
-  $source_repos,
-  $source_release = $::lsbdistcodename,
+  $location,
+  $repo,
+  $release        = $::lsbdistcodename,
+  $include_src    = false,
   $manage_key     = false,
-  $key_name       = undef,
   $key            = undef,
-  $key_server     = undef
+  $source         = undef
 ) {
   # Nearly never hurts to over test
   if $::osfamily != 'Debian' {
     fail('This module only works on Debian or derivatives like Ubuntu')
   }
+
   validate_bool($manage_key)
+  validate_bool($include_src)
 
   # Suck in apt
   include ::apt
 
   # If we're managing the repo key, validate things
   if $manage_key {
-    if $key_name == undef {
-      fail('')
-    }
     if $key == undef {
-      fail('')
+      fail('Define[\'confluence::apt\']: key undefined')
     }
-    if $key_server == undef {
-      fail('')
+    if $source == undef {
+      fail('Define[\'confluence::apt\']: source undefined')
     }
 
-    apt::key { $key_name:
-      key        => $key,
-      key_server => $key_server,
-      notify     => Apt::Source[ $source_name ]
+    apt::key { $key:
+      key_source => $source,
+      notify     => Apt::Source[ $name ]
     }
   }
-  apt::source { $source_name:
-    location   => $source_location,
-    release    => $source_release,
-    repos      => $source_repos
+  apt::source { $name:
+    location    => $location,
+    release     => $release,
+    repos       => $repo,
+    include_src => $include_src
   }
 }

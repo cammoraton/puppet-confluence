@@ -108,13 +108,10 @@ class confluence (
           fail('Class[\'confluence\']: apt_source_location undefined')
         }
         confluence::apt { $apt_source_name:
-          source_name     => $apt_source_name,
-          source_location => $apt_source_location,
-          source_repos    => $apt_source_repos,
+          location        => $apt_source_location,
+          repo            => $apt_source_repos,
           manage_key      => $apt_manage_key,
-          key_name        => $apt_key_name,
           key             => $apt_key,
-          key_server      => $apt_key_server,
           notify          => Package['confluence']
         }
       }
