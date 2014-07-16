@@ -10,39 +10,42 @@ describe 'confluence', :type => :class do
         :concat_basedir         => '/tmp', }
     end
     let :params do
-      { :server_xml_path        => '/tmp/server.xml' }
+      { :server_xml_path        => '/tmp/server.xml',
+        :package_source         => 'none' }
     end
+    
     # Validations also appear broken
     # Booleans
-    # [ :standalone,
-    #  :redirect_to_https,
-    #  :ldaps,
-    #  :manage_database,
-    #  :manage_apache
-    #  ].each do |validate|
-    #   context "when ${validate} param  is true" do
-    #      let(:params) { { validate.to_sym => true } }
-    #      it { should compile }
-    #    end
-    #    context "when ${validate} param is false" do
-    #      let(:params) { { validate.to_sym => false } }
-    #      it { should compile }
-    #    end
-    #    context "when :standalone param  is not a boolean" do
-    #      let(:params) { { validate.to_sym => "I'm a string!" } }    
-    #      it do
-    #        expect { 
-    #          should comple
-    #        }.to raise_error(Puppet::Error, /must be a boolean/)
-    #      end
-    #    end
-    #end
+    [ :standalone,
+      :redirect_to_https,
+      :ldaps,
+      :manage_database,
+      :manage_apache
+    ].each do |validate|
+      context "when #{validate} param  is true" do
+        let(:params) { { :package_source => 'none',
+                         validate.to_sym => true } }
+        it { should contain_class("confluence") }
+        # it { expect { should contain_class("confluence") }.to_not raise_error }#(Puppet::Error, /is not a boolean/) }
+      end
+      context "when #{validate} param is false" do
+        let(:params) { { :package_source => 'none',
+                         validate.to_sym => true } }
+        it { should contain_class("confluence") }
+        #it { expect { should contain_class("confluence") }.to_not raise_error }#(Puppet::Error, /is not a boolean/) }
+      end
+      context "when #{validate} param is not a boolean" do
+        let(:params) { { validate.to_sym => "I'm a string!" } }
+        
+        #it { expect{ should contain_class("confluence") }.to raise_error }#(Puppet::Error, /is not a boolean/) }
+      end
+    end
     
     # This test fails 
     # - it gets commented out because I'm a bad person. -ncc
     # it { should include_class("confluence::params") }
       
-    it { should_not contain_package("confluence") }
+    it { should contain_package("confluence") }
     it { should contain_class("java").with(
       'notify' => 'Class[Confluence::Service]') } 
     it { should contain_file('/tmp/server.xml').with(
@@ -58,7 +61,8 @@ describe 'confluence', :type => :class do
       
     describe "when standalone parameter is set to true" do
       let :params do
-        { :standalone => true, }
+        { :standalone     => true,
+          :package_source => 'none'}
       end
       
       it { should_not contain_class("confluence::apache") }
@@ -67,9 +71,10 @@ describe 'confluence', :type => :class do
     
     describe "when ldaps parameters are set" do
       let :params do
-        { :ldaps        => true,
-          :ldaps_server => "ldap.example.com",
-          :certs_dir    => "/usr/share/confluence/pki", }
+        { :ldaps          => true,
+          :ldaps_server   => "ldap.example.com",
+          :certs_dir      => "/usr/share/confluence/pki",
+          :package_source => 'none' }
       end
       it { should contain_file("/usr/share/confluence/pki") }
       it { should contain_file("/usr/share/confluence/pki/ldap.example.com.pem") }
@@ -78,10 +83,13 @@ describe 'confluence', :type => :class do
     
     describe "when manage_database parameter is set to false" do
       let :params do
-        { :manage_database => false, }
+        { :manage_database => false,
+          :package_source  => 'none' }
       end
       it { should_not contain_class("confluence::postgresql") }
       it { should_not contain_class("postgresql::server::service") }
     end
   end
+  
+  at_exit { RSpec::Puppet::Coverage.report! }
 end

@@ -53,7 +53,7 @@ class confluence (
   $apt_source_repos     = undef,
   $apt_key_source       = undef,
   $apt_source_release   = $::lsbdistrelease,
-  $apt_manage_key       = false,
+  $apt_manage_key       = true,
   $apt_key              = undef,
   $package_file_source  = undef
 ) inherits confluence::params {
@@ -69,7 +69,7 @@ class confluence (
   # Version validation - needs improvement
   validate_re($version, 'present|installed|latest|^[.+_0-9a-zA-Z:-]+$')
 
-  validate_re($package_source, 'apt|yum|file')
+  validate_re($package_source, 'apt|yum|file|none')
 
   # Ports should be digits
   validate_re($http_port,  '^[0-9]+$')
@@ -94,7 +94,7 @@ class confluence (
     notify => Class['Confluence::Service'],
   }
 
-  if $manage_package {
+
     case $package_source {
       'apt': {
         if $apt_source_name == undef {
@@ -121,6 +121,9 @@ class confluence (
       'file': {
         fail('Class[\'confluence\']: File not yet supported')
       }
+      'none': {
+        notice('Class[\'confluence\']: Not managing package source')
+      }
       default: {
         fail("Class['confluence']: Unrecognized package type ${package_source}")
       }
@@ -131,7 +134,7 @@ class confluence (
       notify => [ Class['Confluence::Service'],
                   File[ $server_xml_path ] ]
     }
-  }
+
 
   file { $server_xml_path:
     ensure  => present,
@@ -182,7 +185,8 @@ class confluence (
     file { $certs_dir:
       ensure          => directory,
       owner           => $user,
-      group           => $user
+      group           => $user,
+      require         => Package['confluence']
     }
     confluence::ldaps_server { $ldaps_server:
       ldaps_port      => $ldaps_port,

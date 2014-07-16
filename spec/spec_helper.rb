@@ -6,3 +6,4 @@ RSpec.configure do |config|
     c.syntax = [ :should ]
   end
 end
+
