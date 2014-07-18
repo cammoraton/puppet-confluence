@@ -14,7 +14,6 @@ describe 'confluence', :type => :class do
         :package_source         => 'none' }
     end
     
-    # Validations also appear broken
     # Booleans
     [ :standalone,
       :redirect_to_https,
@@ -23,14 +22,14 @@ describe 'confluence', :type => :class do
       :manage_apache
     ].each do |validate|
       context "when #{validate} param is not a boolean" do
-        let(:params) { { validate.to_sym => "I'm a string!" } }
-        
+        let(:params) { { validate.to_sym => "i'm not valid!" } }
         it { expect { should contain_class("confluence") }.to raise_error(Puppet::Error, /is not a boolean/) }
       end
     end
 
     # This is never officially mentioned as deprecated but it
-    # appears deprecated
+    # appears deprecated -
+    # or at least fixing it appears nontrivial
     # it { should compile }
     
     # Should compile appears to be deprecated - this is
@@ -86,6 +85,4 @@ describe 'confluence', :type => :class do
       it { should_not contain_class("postgresql::server::service") }
     end
   end
-  
-  at_exit { RSpec::Puppet::Coverage.report! }
 end
