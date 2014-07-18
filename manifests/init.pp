@@ -92,58 +92,19 @@ class confluence (
   # Set up java
   class { '::java':
     notify => Class['Confluence::Service'],
+  } 
+  
+  class { 'confluence::package':
+  
+  } ->
+  class { 'confluence::service':
+    enable_service => $enable_service,
   }
-
-
-    case $package_source {
-      'apt': {
-        if $apt_source_name == undef {
-          fail('Class[\'confluence\']: apt_source_name undefined')
-        }
-        if $apt_source_repos == undef {
-          fail('Class[\'confluence\']: apt_source_repos undefined')
-        }
-        if $apt_source_location == undef {
-          fail('Class[\'confluence\']: apt_source_location undefined')
-        }
-        confluence::apt { $apt_source_name:
-          location        => $apt_source_location,
-          repo            => $apt_source_repos,
-          source          => $apt_key_source,
-          manage_key      => $apt_manage_key,
-          key             => $apt_key,
-          notify          => Package['confluence']
-        }
-      }
-      'yum': {
-        fail('Class[\'confluence\']: Yum not yet supported')
-      }
-      'file': {
-        fail('Class[\'confluence\']: File not yet supported')
-      }
-      'none': {
-        notice('Class[\'confluence\']: Not managing package source')
-      }
-      default: {
-        fail("Class['confluence']: Unrecognized package type ${package_source}")
-      }
-    }
-
-    package { 'confluence':
-      ensure => $confluence::version,
-      notify => [ Class['Confluence::Service'],
-                  File[ $server_xml_path ] ]
-    }
-
 
   file { $server_xml_path:
     ensure  => present,
     content => template('confluence/server.xml.erb'),
     notify  => Class['Confluence::Service'],
-  }
-
-  class { 'confluence::service':
-    enable_service => $enable_service,
   }
 
   unless $standalone {
