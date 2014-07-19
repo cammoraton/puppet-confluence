@@ -54,7 +54,7 @@ class confluence::package (
       notice('Class[\'confluence::package\']: Not managing package source')
     }
     default: {
-      fail("Class['confluence::package']: Unrecognized package type ${package_source}")
+      fail("Class['confluence::package']: bad package_type: ${package_source}")
     }
   }
 }
