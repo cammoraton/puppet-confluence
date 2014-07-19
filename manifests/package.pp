@@ -10,8 +10,14 @@
 #
 # Sample
 class confluence::package ( 
-  $version        = $confluence::version,
-  $package_source = $confluence::package_source 
+  $version         = $confluence::version,
+  $package_source  = $confluence::package_source,
+  $apt_source_name = $confluence::apt_source_name,
+  $apt_location    = $confluence::apt_location,
+  $apt_repo        = $confluence::apt_repo,
+  $apt_source      = $confluence::apt_source,
+  $apt_manage_key  = $confluence::apt_manage_key,
+  $apt_key         = $confluence::apt_key
 ) {
   validate_re($package_source, 'apt|yum|file|none')
   

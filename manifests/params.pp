@@ -11,12 +11,6 @@
 # Sample Usage:
 #
 class confluence::params {
-  $service_name  = 'confluence'
-  $user          = 'confluence'
-  $group         = 'confluence'
-  $database_user = 'confluence'
-  $database_name = 'confluence'
-
   if($::fqdn) {
     $servername = $::fqdn
   } else {
@@ -33,7 +27,6 @@ class confluence::params {
     $ssl_key          = '/etc/ssl/private/ssl-cert-snakeoil.key'
     $ssl_certs_dir    = '/etc/ssl/certs'
     $package_source   = 'apt'
-    $tomcat_package   = 'tomcat6-user'
   } elsif $::osfamily == 'RedHat' {
     $ssl_cert         = '/etc/pki/tls/certs/localhost.crt'
     $ssl_key          = '/etc/pki/tls/private/localhost.key'

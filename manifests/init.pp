@@ -13,13 +13,13 @@
 class confluence (
   $version              = 'installed',
   $enable_service       = true,
-  $service_name         = $confluence::params::service_name,
+  $service_name         = 'confluence',
   $ajp_port             = '8009',
   $shutdown_port        = '8005',
   $http_port            = '80',
   $https_port           = '443',
-  $user                 = $confluence::params::user,
-  $group                = $confluence::params::group,
+  $user                 = 'confluence',
+  $group                = 'confluence',
   $confluence_base_dir  = $confluence::params::confluence_base_dir,
   $confluence_etc_dir   = $confluence::params::confluence_etc_dir,
   $server_xml_path      = $confluence::params::server_xml_path,
@@ -34,28 +34,28 @@ class confluence (
   $truststore           = undef,
   $truststore_pass      = 'changeit',
   $local_database       = true,
-  $database_name        = $confluence::params::database_name,
-  $database_user        = $confluence::params::database_user,
+  $database_name        = 'confluence',
+  $database_user        = 'confluence',
   $database_password    = 'changeme',
   $package_source       = $confluence::params::package_source,
   $apt_source_name      = undef,
-  $apt_source_location  = undef,
-  $apt_source_repos     = undef,
-  $apt_key_source       = undef,
-  $apt_source_release   = $::lsbdistrelease,
+  $apt_location         = undef,
+  $apt_repo             = undef,
+  $apt_source           = undef,
   $apt_manage_key       = true,
-  $apt_key              = undef,
-  $package_file_source  = undef
+  $apt_key              = undef
 ) inherits confluence::params {
   # Bools must be booleans
   validate_bool($standalone)
   validate_bool($enable_service)
-  validate_bool($redirect_to_https)
   validate_bool($local_database)
+  validate_bool($default_vhost)
+  validate_bool($apt_manage_key)
 
   # Version validation - needs improvement
   validate_re($version, 'present|installed|latest|^[.+_0-9a-zA-Z:-]+$')
 
+  # Valid options for package source
   validate_re($package_source, 'apt|yum|file|none')
 
   # Ports should be digits
@@ -70,23 +70,20 @@ class confluence (
   validate_absolute_path($server_xml_path)
   validate_absolute_path($certs_dir)
 
+  # Set up java
+  include java
+  
+  class { 'confluence::package': } ->
+  class { 'confluence::service': 
+    enable_service => $enable_service,
+    subscribe      => Class['java'],
+  }
+
 #  group { $group: ensure => present } ->
 #  user { $user:
 #    ensure => present,
 #    group  => $group
 #  }
-
-  # Set up java
-  class { '::java':
-    notify => Class['Confluence::Service'],
-  } 
-  
-  class { 'confluence::package':
-  
-  } ->
-  class { 'confluence::service':
-    enable_service => $enable_service,
-  }
 
   file { $server_xml_path:
     ensure  => present,
@@ -95,19 +92,19 @@ class confluence (
   }
 
   unless $standalone {
-    class { 'confluence::apache':
-      http_port         => $http_port,
-      https_port        => $https_port,
-      redirect_to_https => $redirect_to_https,
-      ajp_port          => $ajp_port,
-      servername        => $servername
+    class { 'confluence::apache': }
+  }
+
+  if $local_database {
+    class { 'confluence::postgresql':
+      notify => Class['Confluence::Service']
     }
   }
 
   # If we set an ldaps server...
-  unless $ldaps_server == undef {
+  unless ( $ldaps_server == undef ) {
     # Truststore - I hate how I'm doing this
-    if $truststore == undef {
+    if ( $truststore == undef ) {
       if $::osfamily == 'Debian' {
         $actual_truststore  = "${::java::java_home}/jre/lib/security/cacerts"
       } elsif $::osfamily == 'RedHat' {
@@ -120,12 +117,14 @@ class confluence (
       $actual_truststore = $truststore
     }
 
-    # Create the cert-store
+    # Create the cert-store (not really,
+    # just a kludge to place pem certs somewhere to trigger
+    # refreshes )
     file { $certs_dir:
       ensure          => directory,
       owner           => $user,
       group           => $user,
-      require         => Package['confluence']
+      require         => Class['Confluence::Package']
     }
     confluence::ldaps_server { $ldaps_server:
       ldaps_port      => $ldaps_port,
@@ -134,14 +133,6 @@ class confluence (
       certs_dir       => $certs_dir,
       certificate     => $ldaps_certificate,
       require         => File[$certs_dir]
-    }
-  }
-
-  if $local_database {
-    class { 'confluence::postgresql':
-      database_name     => $database_name,
-      database_user     => $database_user,
-      database_password => $database_password,
     }
   }
 }
