@@ -1,15 +1,16 @@
 # Class: confluence::params
 #
-# This class manages Confluence parameters
+# This class sets up default parameters for the confluence class
+# that require some kind of logic to set.
+#
+# IE: setting default value for package source based on
+# operating system family fact.
 #
 # Parameters:
-#
-# Actions:
-#
-# Requires:
+# None
 #
 # Sample Usage:
-#
+# Not to be used directly
 class confluence::params {
   if($::fqdn) {
     $servername = $::fqdn

@@ -1,7 +1,10 @@
 # Class: confluence
 #
-# This module manages Atlassian Confluence 
-# The enterprise wiki and scourge of my existance
+# This module manages Atlassian Confluence (the enterprise wiki)
+#
+# Note that because Atlassian, in their infinite wisdom, does not
+# supply a .deb / .rpm package(much less an .msi or .pkg), you must package
+# confluence for yourself.  See the README for help with that.
 #
 # Parameters:
 #   $version - The confluence version to install
@@ -11,7 +14,7 @@
 #       Will update to latest version
 #     version = '3.0.2'
 #       Will ensure v3.0.2 is installed
-#   $package_source
+#   $package_source - where to get the package
 #     package_source = 'apt' (Ubuntu/Debian default)
 #       Install confluence package from supplied apt repository.
 #       Requires $apt_X variables be set.  See using for details.
@@ -49,6 +52,7 @@
 #
 #   DIRECTORIES STUFF
 #
+#  Apache Parameters:
 #   $standalone
 #      standalone = false (Default)
 #        Set up apache and put it in front of confluence
@@ -65,6 +69,8 @@
 #   $vhost_name
 #     Name of the apache::vhost resource for namespacing/namevar
 #     defaults to 'confluence'
+#
+#  LDAPS Parameters:
 #   $ldaps_server
 #     If defined will add the specified server's ssl certificate
 #     into the java truststore so that confluence may connect
@@ -91,27 +97,30 @@
 #   $truststore_pass
 #     Password for the above $truststore.  Defaults to 'changeit'
 #     (the java default).
+#
+#  Postgresql Parameters:
 #   $local_database
 #     local_database = true (Default)
 #       Sets up a local postgresql database for confluence to
-#       connect to.
+#       connect to using the $database_x fields
 #     local_database = false
 #       Skip setting up a local database - asssume it will be managed
 #       off-server.
 #   $database_name
 #     Name of the database to set up/connect to.  Defaults to 'confluence'
 #   $database_user
-#     Username to setup/setup as owner of $database_name.  
-#     Defaults to 'confluence' 
+#     Username to setup/setup as owner of $database_name.
+#     Defaults to 'confluence'
 #   $database_password
 #     The above $database_user's password.  Defaults to 'changeme'
-# Actions:
-#   - Installs confluence from specified source
-#   - Manages the confluence service
-#   - Installs postgresql and apache as needed
-#   - Manages certificates for PKIK validation
 #
-# Requires: see Modulefile
+#  Packaging (Apt) Parameters:
+#   $apt_source_name
+#   $apt_location
+#   $apt_repo
+#   $apt_source
+#   $apt_manage_key
+#   $apt_key
 #
 # Sample Usage:
 #

@@ -1,14 +1,39 @@
 # Class: confluence::package
 #
-# This module manages confluence package
+# This module manages the confluence package and sources for
+# the confluence package.
 #
-# Parameters: none
+# Parameters:
+#   $version - The confluence version to install
+#     version = 'installed' (Default)
+#       Will NOT update confluence to the latest version
+#     version = 'latest'
+#       Will update to latest version
+#     version = '3.0.2'
+#       Will ensure v3.0.2 is installed
+#   $package_source
+#     package_source = 'apt' (Ubuntu/Debian default)
+#       Install confluence package from supplied apt repository.
+#       Requires $apt_X variables be set.  See parameters(apt)
+#     package_source = 'yum' (RedHat/Centos/Amazon default)
+#       Install confluence package from supplied yum repository.
+#       Not yet implemented.
+#     package_source = 'file'
+#       Install confluence from supplied file or source URL
+#       Not yet implemented.
+#     package_source = 'none'
+#       Do not manage the package at all.
 #
-# Actions:
+#  Parameters (apt):
+#   $apt_source_name
+#   $apt_location
+#   $apt_repo
+#   $apt_source
+#   $apt_manage_key
+#   $apt_key
 #
-# Requires: see Modulefile
-#
-# Sample
+# Sample Usage:
+# Not to be called directly
 class confluence::package (
   $version         = $confluence::version,
   $package_source  = $confluence::package_source,
@@ -19,6 +44,7 @@ class confluence::package (
   $apt_manage_key  = $confluence::apt_manage_key,
   $apt_key         = $confluence::apt_key
 ) {
+  validate_re($version, 'present|installed|latest|^[.+_0-9a-zA-Z:-]+$')
   validate_re($package_source, 'apt|yum|file|none')
 
   case $package_source {
