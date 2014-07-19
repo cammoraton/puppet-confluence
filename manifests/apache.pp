@@ -24,12 +24,12 @@ class confluence::apache (
   if $default_vhost {
     class { '::apache':
       default_vhost     => false,
-      default_ssl_vhost => false 
-    } 
+      default_ssl_vhost => false
+    }
   } else {
     include apache
   }
-  
+
   include apache::mod::ssl
   apache::mod { 'proxy_ajp': }
   ensure_resource('apache::listen', $https_port, {})
@@ -42,7 +42,7 @@ class confluence::apache (
     redirect_status => 'permanent',
     redirect_dest   => "https://${servername}",
   }
-  
+
   apache::vhost { "${vhost_name}-ssl":
     port              => $https_port,
     servername        => $servername,
