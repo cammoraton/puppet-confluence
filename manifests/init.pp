@@ -72,9 +72,9 @@ class confluence (
 
   # Set up java
   include java
-  
+
   class { 'confluence::package': } ->
-  class { 'confluence::service': 
+  class { 'confluence::service':
     enable_service => $enable_service,
     subscribe      => Class['java'],
   }
