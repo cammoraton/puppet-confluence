@@ -14,21 +14,10 @@ class confluence (
   $version              = 'installed',
   $enable_service       = true,
   $service_name         = $confluence::params::service_name,
-  $standalone           = false,
-  $manage_apache        = true,
-  $default_vhost        = true,
-  $vhost_name           = 'def',
-  $http_port            = '80',
-  $https_port           = '443',
-  $ssl_cert             = $confluence::params::default_ssl_cert,
-  $ssl_key              = $confluence::params::default_ssl_key,
-  $ssl_chain            = undef,
-  $ssl_ca               = undef,
-  $ssl_crl_path         = undef,
-  $ssl_crl              = undef,
-  $redirect_to_https    = true,
   $ajp_port             = '8009',
   $shutdown_port        = '8005',
+  $http_port            = '80',
+  $https_port           = '443',
   $user                 = $confluence::params::user,
   $group                = $confluence::params::group,
   $confluence_base_dir  = $confluence::params::confluence_base_dir,
@@ -36,17 +25,18 @@ class confluence (
   $server_xml_path      = $confluence::params::server_xml_path,
   $servername           = $confluence::params::servername,
   $certs_dir            = $confluence::params::certs_dir,
-  $ldaps                = false,
+  $standalone           = false,
+  $default_vhost        = true,
+  $vhost_name           = 'confluence',
   $ldaps_server         = undef,
   $ldaps_certificate    = undef,
   $ldaps_port           = '636',
   $truststore           = undef,
   $truststore_pass      = 'changeit',
-  $manage_database      = true,
+  $local_database       = true,
   $database_name        = $confluence::params::database_name,
   $database_user        = $confluence::params::database_user,
   $database_password    = 'changeme',
-  $manage_package       = false,
   $package_source       = $confluence::params::package_source,
   $apt_source_name      = undef,
   $apt_source_location  = undef,
@@ -61,10 +51,7 @@ class confluence (
   validate_bool($standalone)
   validate_bool($enable_service)
   validate_bool($redirect_to_https)
-  validate_bool($ldaps)
-  validate_bool($manage_database)
-  validate_bool($manage_apache)
-  validate_bool($manage_package)
+  validate_bool($local_database)
 
   # Version validation - needs improvement
   validate_re($version, 'present|installed|latest|^[.+_0-9a-zA-Z:-]+$')
@@ -113,21 +100,12 @@ class confluence (
       https_port        => $https_port,
       redirect_to_https => $redirect_to_https,
       ajp_port          => $ajp_port,
-      servername        => $servername,
-      ssl_cert          => $ssl_cert,
-      ssl_key           => $ssl_key,
-      ssl_chain         => $ssl_chain,
-      ssl_ca            => $ssl_ca,
-      ssl_crl_path      => $ssl_crl_path,
-      ssl_crl           => $ssl_crl
+      servername        => $servername
     }
   }
 
-  # Now a define!
-  if $ldaps {
-    if $ldaps_server == undef {
-      fail('Class[\'confluence\']: Must define ldap server')
-    }
+  # If we set an ldaps server...
+  unless $ldaps_server == undef {
     # Truststore - I hate how I'm doing this
     if $truststore == undef {
       if $::osfamily == 'Debian' {
@@ -159,7 +137,7 @@ class confluence (
     }
   }
 
-  if $manage_database {
+  if $local_database {
     class { 'confluence::postgresql':
       database_name     => $database_name,
       database_user     => $database_user,
