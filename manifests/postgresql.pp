@@ -16,7 +16,7 @@ class confluence::postgresql (
   $database_password = $confluence::database_password,
 ) {
   require postgresql::server
-  
+
   postgresql::server::role { $database_user:
     password_hash => $database_password
   } ->
