@@ -1,10 +1,115 @@
 # Class: confluence
 #
-# This module manages confluence
+# This module manages Atlassian Confluence 
+# The enterprise wiki and scourge of my existance
 #
-# Parameters: none
+# Parameters:
+#   $version - The confluence version to install
+#     version = 'installed' (Default)
+#       Will NOT update confluence to the latest version
+#     version = 'latest'
+#       Will update to latest version
+#     version = '3.0.2'
+#       Will ensure v3.0.2 is installed
+#   $package_source
+#     package_source = 'apt' (Ubuntu/Debian default)
+#       Install confluence package from supplied apt repository.
+#       Requires $apt_X variables be set.  See using for details.
+#     package_source = 'yum' (RedHat/Centos/Amazon default)
+#       Install confluence package from supplied yum repository.
+#       Not yet implemented.
+#     package_source = 'file'
+#       Install confluence from supplied file or source URL
+#       Not yet implemented.
+#     package_source = 'none'
+#       Do not manage the package at all.
+#   $enable_service
+#     enable_service = true (Default)
+#       Enable the confluence service
+#     enable_service = false
+#       Disable the confluence service
+#   $service_name
+#      The name of the service to manage defaults to 'confluence'
+#   $ajp_port
+#      tomcat AJP port, defaults to 8009
+#   $shutdown_port
+#      tomcat shutdown port, defaults to 8005
+#   $http_port
+#      Apache or tomcat http port.  Redirects to $https_port.
+#      Defaults to 80(if $standalone is set will need to ensure
+#      $confluence_user can start services on 80).
+#   $https_port
+#      Apache or tomcat https port.  Defaults to 443(if
+#      $standalone is set will need to ensure $confluence_user
+#      can start services on 443).
+#   $user
+#      User to run confluence as.  Defaults to 'confluence'
+#   $group
+#      Group to run confluence as.  Defaults to 'confluence'
 #
+#   DIRECTORIES STUFF
+#
+#   $standalone
+#      standalone = false (Default)
+#        Set up apache and put it in front of confluence
+#      standalone = true
+#        Skip setting up apache and just set up the coyote
+#        connectors on $http_port / $https_port
+#   $default_vhost
+#      default_vhost = true (Default)
+#        Confluence vhost will be default.  Also parameterizes
+#        puppetlabs/apache class.
+#      default_vhost = false
+#        Does not set confluence as default vhost.  Will set
+#        up as a name-based vhost on $servername.
+#   $vhost_name
+#     Name of the apache::vhost resource for namespacing/namevar
+#     defaults to 'confluence'
+#   $ldaps_server
+#     If defined will add the specified server's ssl certificate
+#     into the java truststore so that confluence may connect
+#     over SSL without PKIK errors.
+#
+#     Will autoload the certificate by connecting to $ldaps_server
+#     on $ldaps_port and retrieving the cert unless $ldaps_certificate
+#     is defined.
+#
+#     Defaults to undefined.
+#   $ldaps_certificate
+#     A specific certificate in PEM format to load.  If set will
+#     skip retrieving the certificate from $ldaps_server prior to
+#     installation and just load this certificate.
+#
+#     Defaults to undefined.
+#   $ldaps_port
+#     Port to connect to ldap server on.  Defaults to 636(ldaps).
+#   $truststore
+#     Fully qualified path to java truststore to store certificate
+#     in what so confluence can talk LDAPS without PKIK errors.
+#     Defaults vary by distribution
+#     - Ubuntu/Debian = $JAVA_HOME/jre/lib/security/cacerts
+#   $truststore_pass
+#     Password for the above $truststore.  Defaults to 'changeit'
+#     (the java default).
+#   $local_database
+#     local_database = true (Default)
+#       Sets up a local postgresql database for confluence to
+#       connect to.
+#     local_database = false
+#       Skip setting up a local database - asssume it will be managed
+#       off-server.
+#   $database_name
+#     Name of the database to set up/connect to.  Defaults to 'confluence'
+#   $database_user
+#     Username to setup/setup as owner of $database_name.  
+#     Defaults to 'confluence' 
+#   $database_password
+#     The above $database_user's password.  Defaults to 'changeme'
 # Actions:
+#   - Installs confluence from specified source
+#   - Manages the confluence service
+#   - Installs postgresql and apache as needed
+#   - Manages certificates for PKIK validation
 #
 # Requires: see Modulefile
 #
