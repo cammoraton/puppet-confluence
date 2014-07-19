@@ -9,7 +9,7 @@
 # Requires: see Modulefile
 #
 # Sample
-class confluence::package ( 
+class confluence::package (
   $version         = $confluence::version,
   $package_source  = $confluence::package_source,
   $apt_source_name = $confluence::apt_source_name,
@@ -20,7 +20,7 @@ class confluence::package (
   $apt_key         = $confluence::apt_key
 ) {
   validate_re($package_source, 'apt|yum|file|none')
-  
+
   case $package_source {
     'apt': {
       if $::osfamily != 'Debian' {
