@@ -47,7 +47,7 @@ describe 'confluence', :type => :class do
       'notify' => 'Class[Confluence::Service]')}
 
     it { should contain_class("confluence::service").with(
-      'subscribe' => 'Class[java]')}
+      'subscribe' => 'Class[Java]')}
     
     it { should contain_class("confluence::apache") }
     it { should contain_class("apache::service") } 
