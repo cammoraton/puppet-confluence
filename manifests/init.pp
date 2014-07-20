@@ -137,11 +137,17 @@
 #
 #  Packaging (Apt) Parameters:
 #   $apt_source_name
+#     Name variable for all things apt repo.
 #   $apt_location
+#     URL for apt repository.  Not defined.
 #   $apt_repo
-#   $apt_source
+#     Repository name.  Defaults to 'main'
 #   $apt_manage_key
+#     Whether or not to manage the key.  Defaults to false.
+#   $apt_source
+#     Source of the key
 #   $apt_key
+#     The key ID
 #
 # Sample Usage:
 #
@@ -191,9 +197,9 @@ class confluence (
   $package_source       = $confluence::params::package_source,
   $apt_source_name      = undef,
   $apt_location         = undef,
-  $apt_repo             = undef,
+  $apt_repo             = 'main',
+  $apt_manage_key       = false,
   $apt_source           = undef,
-  $apt_manage_key       = true,
   $apt_key              = undef
 ) inherits confluence::params {
   # Bools must be booleans
@@ -227,9 +233,11 @@ class confluence (
   class { 'confluence::package': } ->
   class { 'confluence::service':
     enable_service => $enable_service,
-    subscribe      => Class['java'],
+    subscribe      => Class['Java'],
   }
 
+  # Package should do this, but is custom
+  # so, just be sure
 #  group { $group: ensure => present } ->
 #  user { $user:
 #    ensure => present,
@@ -243,7 +251,9 @@ class confluence (
   }
 
   unless $standalone {
-    class { 'confluence::apache': }
+    class { 'confluence::apache': 
+      subscribe => Class['Confluence::Service']
+    }
   }
 
   if $local_database {
