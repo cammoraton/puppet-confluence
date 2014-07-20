@@ -17,7 +17,8 @@ describe 'confluence', :type => :class do
     # Booleans
     [ :standalone,
       :local_database,
-      :default_vhost
+      :default_vhost,
+      :apt_manage_key
     ].each do |validate|
       context "when #{validate} param is not a boolean" do
         let(:params) { { validate.to_sym => "i'm not valid!" } }

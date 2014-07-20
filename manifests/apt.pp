@@ -1,10 +1,21 @@
-# Defined Resource Type: confluence::apt
+# Define Resource Type: confluence::apt
 #
 # Wraps around puppetlabs/apt apt::key and apt::source
 # types to define an apt source for the confluence package
 #
 # Parameters:
-#
+#   $apt_source_name
+#     Name variable for all things apt repo.
+#   $apt_location
+#     URL for apt repository.  Not defined.
+#   $apt_repo
+#     Repository name.  Defaults to 'main'
+#   $apt_manage_key
+#     Whether or not to manage the key.  Defaults to false.
+#   $apt_source
+#     Source of the key
+#   $apt_key
+#     The key ID
 #
 # Sample Usage:
 # Should not be used directly

@@ -4,12 +4,8 @@
 #
 # Parameters:
 #
-# Actions:
-#
-# Requires:
-#
 # Sample Usage:
-#
+# Should not be referenced directly.
 class confluence::apache (
   $default_vhost     = $confluence::default_vhost,
   $vhost_name        = $confluence::vhost_name,

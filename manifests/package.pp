@@ -26,11 +26,17 @@
 #
 #  Parameters (apt):
 #   $apt_source_name
+#     Name variable for all things apt repo.
 #   $apt_location
+#     URL for apt repository.  Not defined.
 #   $apt_repo
-#   $apt_source
+#     Repository name.  Defaults to 'main'
 #   $apt_manage_key
+#     Whether or not to manage the key.  Defaults to false.
+#   $apt_source
+#     Source of the key
 #   $apt_key
+#     The key ID
 #
 # Sample Usage:
 # Not to be called directly
@@ -44,6 +50,8 @@ class confluence::package (
   $apt_manage_key  = $confluence::apt_manage_key,
   $apt_key         = $confluence::apt_key
 ) {
+  validate_bool($apt_manage_key)
+
   validate_re($version, 'present|installed|latest|^[.+_0-9a-zA-Z:-]+$')
   validate_re($package_source, 'apt|yum|file|none')
 

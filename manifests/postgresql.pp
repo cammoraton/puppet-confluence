@@ -4,12 +4,8 @@
 #
 # Parameters:
 #
-# Actions:
-#
-# Requires:
-#
 # Sample Usage:
-#
+# Should not be called directly.
 class confluence::postgresql (
   $database_name     = $confluence::database_name,
   $database_user     = $confluence::database_user,

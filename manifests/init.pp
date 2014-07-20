@@ -56,26 +56,132 @@
 #      What GID the above $group should be.  Defaults to undefined
 #      which lets the underlying system pick.
 #   $base_dir
+#     ( set from confluence::params )
+#     Base directory for confluence.  Parent parameter for many other
+#     directory parameters.  Must be fully qualified.
+#
+#     Defaults to '/usr/share/confluence'
 #   $etc_dir
+#     ( set from confluence::params )
+#     Configuration directory for confluence.  Parent parameter for many
+#     other parameters.  Must be fully qualified.
+#
+#     Defaults to '/etc/confluence'
 #   $certs_dir
+#     ( set from confluence::params )
+#
+#     Directory to store PEM certs for LDAPS ahead of keytool importation.
+#     Must be fully qualified.
+#
+#     Defaults to '$base_dir/pki'
 #   $webapps_dir
+#     ( set from confluence::params )
+#     Tomcat webapps directory.  Base location for Confluence WAR
+#     Must be fully qualified.
+#
+#     Defaults to '$base_dir/webapps'
 #   $log_dir
+#     ( set from confluence::params )
+#     Log directory.  Location where tomcat and confluence webapp should
+#     drop logs.  Must be fully qualified.
+#
+#     Defaults to '$base_dir/logs'
 #   $data_dir
+#     ( set from confluence::params )
+#     confluence.home.  The directory where confluence should store all it's
+#     not database data(IE: attachements).  Must be fully qualified.
+#
+#     Defaults to '$base_dir/data'
 #   $webapp
+#     ( set from confluence::params )
+#     The webapp context itself.  Defaults to 'ROOT' (the default context)
 #   $webapp_dir
+#     ( set from confluence::params )
+#     Webapp directory. Must be fully qualified.
+#
+#     Defaults to '$webapps_dir/$webapp'
 #   $webapp_conf
+#     ( set from confluence::params )
+#     Path to confluence configuration within exploded webapp.  Must be
+#     fully qualified.
+#
+#     Defaults to '$webapp_dir/WEB-INF/classes'
 #   $user_config
+#     ( set from confluence::params )
+#     Path to atlassian-user.xml.  Pre-confluence 4.0 this was how ldap
+#     directories were managed.  Must be fully qualified.  Not currently used.
+#
+#     Defaults to '$webapp_conf/atlassian-user.xml'
 #   $conluence_init
+#     ( set from confluence::params )
+#     Path to confluence-init.properties(which defines the location of
+#     the data directory for confluence).  Must be fully qualified.
+#
+#     Defaults to '$webapp_conf/confluence-init.properties'
 #   $server_xml
+#     ( set from confluence::params )
+#     Path to tomcat server.xml configuration.  Must be fully qualified.
+#
+#     Defaults to '$etc_dir/server.xml'
 #   $confluence_conf
+#     ( set from confluence::params )
+#     Path to confluence configuration. Currently unused. Must be fully
+#     qualified.
+#
+#     Defaults to '$data_dir/confluence.cfg.xml'
 #   $symlink_app
+#     ( set from confluence::params )
+#     If set will symlink $webapp_dir to whatever this is set to. Must be
+#     fully qualified. Currently unused.
+#
+#     Defaults to undefined.
 #   $log_links
+#     log_links = '/var/log/confluence'
+#       Creates a symlink from $log_dir to /var/log/confluence owned
+#       by $user:$log_group.  Must be an absolute path.
+#     log_links = [ '/var/log/confluence', '/var/log/confluence2' ]
+#       Creates symlinks from $log_dir to both /var/log/confluence
+#       and /var/log/confluence2 owned by $user:$log_group.
+#       All values in array must be absolute paths.
 #   $etc_links
+#     etc_links = '/usr/share/confluence/conf'
+#       Creates a symlink from $etc_dir to /usr/share/confluence/conf
+#       Ownership will be puppet default(generally 'root').  Must be
+#       an absolute path.
+#     etc_links = [ /etc/value1', '/etc/value2' ]
+#       Creates symlinks from $etc_dir to /etc/value1 and /etc/value2.
+#       Ownership will be puppet default(generally 'root').  All values
+#       must be absolute paths.
 #   $sysconfig
+#     ( set from confluence::params )
+#     Path to init arguments.
+#
+#     Defaults vary by distribution.
+#     - Ubuntu/Debian = /etc/defaults/confluence
+#     - RedHat = /etc/sysconfig/confluence
 #   $min_heap
+#     ( set from confluence::params )
+#     Minimum heap size for the JVM that runs Tomcat.
+#
+#     Defaults to 256 MB.
 #   $perm_space
+#     ( set from confluence::params )
+#     PermGen Size for the JVM that runs Tomcat.
+#
+#     Defaults to 256 MB.
 #   $max_heap
+#     ( set from confluence::params )
+#     Maximum heap size for the JVM that runs Tomcat.
+#
+#     Defaults to half system memory or 512MB, whichever
+#     is greater.
 #   $log_group
+#     ( set from confluence::params )
+#     The group logging directories and log symlinks should
+#     be set to.
+#
+#     Defaults vary by distribution:
+#     - Ubuntu/Debian = 'adm'
 #
 #  Apache Parameters:
 #   $standalone
@@ -92,6 +198,7 @@
 #        Does not set confluence as default vhost.  Will set
 #        up as a name-based vhost on $servername.
 #   $servername
+#     ( set from confluence::params )
 #     Servername to set on vhost.  Defaults to fqdn fact.
 #   $vhost_name
 #     Name of the apache::vhost resource for namespacing/namevar
@@ -105,7 +212,8 @@
 #
 #     Will autoload the certificate by connecting to $ldaps_server
 #     on $ldaps_port and retrieving the cert unless $ldaps_certificate
-#     is defined.
+#     is defined.  Note that if this fails for whatever reason, it
+#     will block other services.
 #
 #     Defaults to undefined.
 #   $ldaps_certificate
@@ -184,13 +292,13 @@ class confluence (
   $server_xml           = $confluence::params::server_xml,
   $confluence_conf      = $confluence::params::confluence_conf,
   $symlink_app          = $confluence::params::symlink_app,
-  $log_links            = $confluence::params::log_links,
-  $etc_links            = $confluence::params::etc_links,
   $sysconfig            = $confluence::params::sysconfig,
   $min_heap             = $confluence::params::min_heap,
   $perm_space           = $confluence::params::perm_space,
   $max_heap             = $confluence::params::max_heap,
   $log_group            = $confluence::params::log_group,
+  $log_links            = undef,
+  $etc_links            = undef,
   $standalone           = false,
   $default_vhost        = true,
   $vhost_name           = 'confluence',
@@ -243,10 +351,21 @@ class confluence (
   validate_absolute_path($confluence_init)
   validate_absolute_path($server_xml)
   validate_absolute_path($confluence_conf)
-  unless ($symlink_app == undef ) {
+  unless ( $symlink_app == undef ) {
     validate_absolute_path($symlink_app)
   }
-
+  unless ( $log_links == undef ) {
+    if is_array($log_links) {
+    } else {
+      validate_absolute_path($log_links)
+    }
+  }
+  unless ( $etc_links == undef ) {
+    if is_array($etc_links) {
+    } else {
+      validate_absolute_path($etc_links)
+    }
+  }
   # Set up java
   include java
 
@@ -259,14 +378,14 @@ class confluence (
   # Package should do this, but is custom
   # so, just be sure user and group are made and right
   if ($gid == undef) {
-    group { $group: 
+    group { $group:
       ensure  => present,
       require => Class['Confluence::Package']
     }
   } else {
     group { $group:
-      ensure => present,
-      gid    => $gid,
+      ensure  => present,
+      gid     => $gid,
       require => Class['Confluence::Package']
     }
   }
@@ -368,15 +487,19 @@ class confluence (
   }
 
   # Conveinance / layout links
-  file { $log_links:
-    ensure  => $log_dir,
-    owner   => $user,
-    group   => $log_group,
-    require => File[$log_dir]
+  unless ( $log_links == undef ) {
+    file { $log_links:
+      ensure  => $log_dir,
+      owner   => $user,
+      group   => $log_group,
+      require => File[$log_dir]
+    }
   }
-  file { $etc_links:
-    ensure  => $etc_dir,
-    require => File[$etc_dir]
+  unless ( $etc_links == undef ) {
+    file { $etc_links:
+      ensure  => $etc_dir,
+      require => File[$etc_dir]
+    }
   }
 
   unless $standalone {
