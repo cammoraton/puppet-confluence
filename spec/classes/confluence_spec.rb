@@ -25,6 +25,26 @@ describe 'confluence', :type => :class do
       end
     end
 
+    # Absolute paths
+    [ :base_dir,
+      :etc_dir,
+      :certs_dir,
+      :webapps_dir,
+      :log_dir,
+      :data_dir,
+      :webapp_dir,
+      :webapp_conf,
+      :user_config,
+      :confluence_init,
+      :server_xml,
+      :confluence_conf,
+      :symlink_app ].each do |validate|
+      context "when #{validate} param is not a fully qualified path" do
+        let(:params) { { validate.to_sym => "tmp/path" } }
+        it { expect { should contain_class("confluence") }.to raise_error(Puppet::Error, /is not an absolute path/) }
+      end
+    end
+
     # This is never officially mentioned as deprecated but it
     # appears deprecated -
     # or at least fixing it appears nontrivial
