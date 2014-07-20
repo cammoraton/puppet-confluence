@@ -38,10 +38,14 @@ class confluence::params {
 
   $min_heap   = 256
   $perm_space = 256
-  if $::memorysize_mb <= 1024 {
+  # seriously I have to do an implicit to_i
+  # via an inline template?  WTF parser dudes!
+  $memory = inline_template('<%= @memorysize_mb.to_i %>')
+  
+  if $memory <= 1024 {
     $max_heap   = 512
   } else {
-    $max_heap   = $::memorysize_mb / 2
+    $max_heap   = $memory / 2
   }
   if $::osfamily == 'Debian' {
     $package_source   = 'apt'
