@@ -22,7 +22,7 @@ class confluence::params {
   $certs_dir   = "${base_dir}/pki"
   $webapps_dir = "${base_dir}/webapps"
   $log_dir     = "${base_dir}/logs"
-  $data_dir    = "${base_dir}/data"  
+  $data_dir    = "${base_dir}/data"
   $webapp      = 'ROOT'
   $webapp_dir  = "${webapps_dir}/${webapp}"
   $webapp_conf = "${webapp_dir}/WEB-INF/classes"
