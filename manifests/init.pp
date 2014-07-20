@@ -47,8 +47,14 @@
 #      can start services on 443).
 #   $user
 #      User to run confluence as.  Defaults to 'confluence'
+#   $uid
+#      What UID the above $user should be.  Defaults to undefined.
+#      which lets the underlying system pick.
 #   $group
 #      Group to run confluence as.  Defaults to 'confluence'
+#   $gid
+#      What GID the above $group should be.  Defaults to undefined
+#      which lets the underlying system pick.
 #   $base_dir
 #   $etc_dir
 #   $certs_dir
@@ -160,7 +166,9 @@ class confluence (
   $http_port            = '80',
   $https_port           = '443',
   $user                 = 'confluence',
+  $uid                  = undef,
   $group                = 'confluence',
+  $gid                  = undef,
   $servername           = $confluence::params::servername,
   $base_dir             = $confluence::params::base_dir,
   $etc_dir              = $confluence::params::etc_dir,
@@ -172,11 +180,12 @@ class confluence (
   $webapp_dir           = $confluence::params::webapp_dir,
   $webapp_conf          = $confluence::params::webapp_conf,
   $user_config          = $confluence::params::user_config,
-  $conluence_init       = $confluence::params::confluence_init,
+  $confluence_init      = $confluence::params::confluence_init,
   $server_xml           = $confluence::params::server_xml,
   $confluence_conf      = $confluence::params::confluence_conf,
   $symlink_app          = $confluence::params::symlink_app,
   $log_links            = $confluence::params::log_links,
+  $etc_links            = $confluence::params::etc_links,
   $sysconfig            = $confluence::params::sysconfig,
   $min_heap             = $confluence::params::min_heap,
   $perm_space           = $confluence::params::perm_space,
@@ -224,8 +233,19 @@ class confluence (
   # Paths should be absolute
   validate_absolute_path($base_dir)
   validate_absolute_path($etc_dir)
-  validate_absolute_path($server_xml)
   validate_absolute_path($certs_dir)
+  validate_absolute_path($webapps_dir)
+  validate_absolute_path($log_dir)
+  validate_absolute_path($data_dir)
+  validate_absolute_path($webapp_dir)
+  validate_absolute_path($webapp_conf)
+  validate_absolute_path($user_config)
+  validate_absolute_path($confluence_init)
+  validate_absolute_path($server_xml)
+  validate_absolute_path($confluence_conf)
+  unless ($symlink_app == undef ) {
+    validate_absolute_path($symlink_app)
+  }
 
   # Set up java
   include java
@@ -237,21 +257,122 @@ class confluence (
   }
 
   # Package should do this, but is custom
-  # so, just be sure
-#  group { $group: ensure => present } ->
-#  user { $user:
-#    ensure => present,
-#    group  => $group
-#  }
+  # so, just be sure user and group are made and right
+  if ($gid == undef) {
+    group { $group: ensure => present }
+  } else {
+    group { $group:
+      ensure => present,
+      gid    => $gid
+    }
+  }
+  if ($uid == undef) {
+    user { $user:
+      ensure    => present,
+      gid       => $group,
+      require   => Group[$group]
+    }
+  } else {
+    user { $user:
+      ensure    => present,
+      uid       => $uid,
+      gid       => $group,
+      require   => Group[$group]
+    }
+  }
+  # Set up all our directories.
+  # The package should do this, but since that's manual
+  # go ahead and burn the resources on ensuring it.
+  file { $base_dir:
+    ensure  => directory,
+    owner   => $user,
+    group   => $group,
+    require => [
+      Class['Confluence::Package'],
+      User[$user],
+      Group[$group] ]
+  }
+  file { $etc_dir:
+    ensure  => directory,
+    owner   => $user,
+    group   => $group,
+    require => File[$base_dir]
+  }
+  file { $webapps_dir:
+    ensure  => directory,
+    owner   => $user,
+    group   => $group,
+    require => File[$base_dir]
+  }
+  file { $data_dir:
+    ensure  => directory,
+    owner   => $user,
+    group   => $group,
+    require => File[$base_dir]
+  }
+  file { $log_dir:
+    ensure  => directory,
+    owner   => $user,
+    group   => $log_group,
+    require => File[$base_dir]
+  }
 
+  # Configuration
+  # Server.xml - tomcat config
   file { $server_xml:
     ensure  => present,
+    owner   => $user,
+    group   => $group,
     content => template('confluence/server.xml.erb'),
+    require => File[$etc_dir],
+    notify  => Class['Confluence::Service']
+  }
+
+  # Confluence init,
+  # don't actually set up the webapp dir though
+  file { $confluence_init:
+    ensure  => present,
+    owner   => $user,
+    group   => $group,
+    content => template('confluence/confluence-init.erb'),
     notify  => Class['Confluence::Service'],
+    require => File[$data_dir]
+  }
+
+  # Not yet implemented (still thinking through implications)
+  # $confluence_conf
+  # and
+  # $user_conf
+
+  # Symlinks
+  unless ($symlink_app == undef ) {
+    # Application link (if you like doing it that way)
+    # being all things to all people.
+    file { $webapp_dir:
+      ensure  => $symlink_app,
+      owner   => $user,
+      group   => $group,
+      require => File['$webapps_dir'],
+      notify  => [
+        Class['Confluence::Service'],
+        File[$confluence_init] ]
+    }
+  }
+
+  # Conveinance / layout links
+  file { $log_links:
+    ensure  => $log_dir,
+    owner   => $user,
+    group   => $log_group,
+    require => File[$log_dir]
+  }
+  file { $etc_links:
+    ensure  => $etc_dir,
+    require => File[$etc_dir]
   }
 
   unless $standalone {
-    class { 'confluence::apache': 
+    class { 'confluence::apache':
       subscribe => Class['Confluence::Service']
     }
   }
