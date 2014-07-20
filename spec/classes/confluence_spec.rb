@@ -10,45 +10,44 @@ describe 'confluence', :type => :class do
         :concat_basedir         => '/tmp', }
     end
     let :params do
-      { :server_xml_path        => '/tmp/server.xml' }
+      { :server_xml             => '/tmp/server.xml',
+        :package_source         => 'none' }
     end
-    # Validations also appear broken
-    # Booleans
-    # [ :standalone,
-    #  :redirect_to_https,
-    #  :ldaps,
-    #  :manage_database,
-    #  :manage_apache
-    #  ].each do |validate|
-    #   context "when ${validate} param  is true" do
-    #      let(:params) { { validate.to_sym => true } }
-    #      it { should compile }
-    #    end
-    #    context "when ${validate} param is false" do
-    #      let(:params) { { validate.to_sym => false } }
-    #      it { should compile }
-    #    end
-    #    context "when :standalone param  is not a boolean" do
-    #      let(:params) { { validate.to_sym => "I'm a string!" } }    
-    #      it do
-    #        expect { 
-    #          should comple
-    #        }.to raise_error(Puppet::Error, /must be a boolean/)
-    #      end
-    #    end
-    #end
     
+    # Booleans
+    [ :standalone,
+      :local_database,
+      :default_vhost
+    ].each do |validate|
+      context "when #{validate} param is not a boolean" do
+        let(:params) { { validate.to_sym => "i'm not valid!" } }
+        it { expect { should contain_class("confluence") }.to raise_error(Puppet::Error, /is not a boolean/) }
+      end
+    end
+
+    # This is never officially mentioned as deprecated but it
+    # appears deprecated -
+    # or at least fixing it appears nontrivial
+    # it { should compile }
+    
+    # Should compile appears to be deprecated - this is
+    # a rough approx
+    it { should contain_class("confluence") }
+
     # This test fails 
     # - it gets commented out because I'm a bad person. -ncc
-    # it { should include_class("confluence::params") }
-      
+    #it { should include_class("confluence::params") }
+
+    # Not managing it so it shouldn't exist      
     it { should_not contain_package("confluence") }
-    it { should contain_class("java").with(
-      'notify' => 'Class[Confluence::Service]') } 
+
+    it { should contain_class("confluence::package") }
+    it { should contain_class("java") } 
     it { should contain_file('/tmp/server.xml').with(
       'notify' => 'Class[Confluence::Service]')}
 
-    it { should contain_class("confluence::service") }
+    it { should contain_class("confluence::service").with(
+      'subscribe' => 'Class[Java]')}
     
     it { should contain_class("confluence::apache") }
     it { should contain_class("apache::service") } 
@@ -58,7 +57,8 @@ describe 'confluence', :type => :class do
       
     describe "when standalone parameter is set to true" do
       let :params do
-        { :standalone => true, }
+        { :standalone     => true,
+          :package_source => 'none'}
       end
       
       it { should_not contain_class("confluence::apache") }
@@ -67,18 +67,19 @@ describe 'confluence', :type => :class do
     
     describe "when ldaps parameters are set" do
       let :params do
-        { :ldaps        => true,
-          :ldaps_server => "ldap.example.com",
-          :certs_dir    => "/usr/share/confluence/pki", }
+        { :ldaps_server   => "ldap.example.com",
+          :certs_dir      => "/usr/share/confluence/pki",
+          :package_source => 'none' }
       end
       it { should contain_file("/usr/share/confluence/pki") }
       it { should contain_file("/usr/share/confluence/pki/ldap.example.com.pem") }
       it { should contain_java_ks("confluence::ldaps_server::ldap.example.com::certificate") }
     end
     
-    describe "when manage_database parameter is set to false" do
+    describe "when local_database parameter is set to false" do
       let :params do
-        { :manage_database => false, }
+        { :local_database => false,
+          :package_source  => 'none' }
       end
       it { should_not contain_class("confluence::postgresql") }
       it { should_not contain_class("postgresql::server::service") }
