@@ -1,4 +1,4 @@
-# == Define Resource Type: confluence::ldaps_server
+# Define Resource Type: confluence::ldaps_server
 #
 define confluence::ldaps_server (
   $truststore,

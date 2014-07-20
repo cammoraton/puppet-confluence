@@ -4,12 +4,8 @@
 #
 # Parameters:
 #
-# Actions:
-#
-# Requires:
-#
 # Sample Usage:
-#
+# Should not be used directly.
 class confluence::service (
   $enable_service = true,
 ) {

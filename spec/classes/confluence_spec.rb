@@ -17,11 +17,32 @@ describe 'confluence', :type => :class do
     # Booleans
     [ :standalone,
       :local_database,
-      :default_vhost
+      :default_vhost,
+      :apt_manage_key
     ].each do |validate|
       context "when #{validate} param is not a boolean" do
         let(:params) { { validate.to_sym => "i'm not valid!" } }
         it { expect { should contain_class("confluence") }.to raise_error(Puppet::Error, /is not a boolean/) }
+      end
+    end
+
+    # Absolute paths
+    [ :base_dir,
+      :etc_dir,
+      :certs_dir,
+      :webapps_dir,
+      :log_dir,
+      :data_dir,
+      :webapp_dir,
+      :webapp_conf,
+      :user_config,
+      :confluence_init,
+      :server_xml,
+      :confluence_conf,
+      :symlink_app ].each do |validate|
+      context "when #{validate} param is not a fully qualified path" do
+        let(:params) { { validate.to_sym => "tmp/path" } }
+        it { expect { should contain_class("confluence") }.to raise_error(Puppet::Error, /is not an absolute path/) }
       end
     end
 

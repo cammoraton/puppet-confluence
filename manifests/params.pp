@@ -18,7 +18,7 @@ class confluence::params {
     $servername = $::hostname
   }
   $base_dir    = '/usr/share/confluence'
-  $etc_dir     = "${base_dir}/conf"
+  $etc_dir     = '/etc/confluence'
   $certs_dir   = "${base_dir}/pki"
   $webapps_dir = "${base_dir}/webapps"
   $log_dir     = "${base_dir}/logs"
@@ -33,8 +33,10 @@ class confluence::params {
   $confluence_conf = "${data_dir}/confluence.cfg.xml"
 
   $symlink_app = undef
+
+  # Don't actually use these
   $log_links   = [ '/var/log/confluence', "${data_dir}/logs" ]
-  $etc_links   = [ '/etc/confluence' ]
+  $etc_links   = [ "${base_dir}/conf" ]
 
   $min_heap   = 256
   $perm_space = 256
