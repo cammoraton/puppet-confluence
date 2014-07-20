@@ -41,7 +41,7 @@ class confluence::params {
   # seriously I have to do an implicit to_i
   # via an inline template?  WTF parser dudes!
   $memory = inline_template('<%= @memorysize_mb.to_i %>')
-  
+
   if $memory <= 1024 {
     $max_heap   = 512
   } else {
