@@ -49,8 +49,27 @@
 #      User to run confluence as.  Defaults to 'confluence'
 #   $group
 #      Group to run confluence as.  Defaults to 'confluence'
-#
-#   DIRECTORIES STUFF
+#   $base_dir
+#   $etc_dir
+#   $certs_dir 
+#   $webapps_dir
+#   $log_dir
+#   $data_dir 
+#   $webapp
+#   $webapp_dir
+#   $webapp_conf
+#   $user_config
+#   $conluence_init
+#   $server_xml
+#   $confluence_conf
+#   $symlink_app
+#   $log_links
+#   $etc_links
+#   $sysconfig 
+#   $min_heap
+#   $perm_space
+#   $max_heap
+#   $log_group
 #
 #  Apache Parameters:
 #   $standalone
@@ -66,6 +85,8 @@
 #      default_vhost = false
 #        Does not set confluence as default vhost.  Will set
 #        up as a name-based vhost on $servername.
+#   $servername
+#     Servername to set on vhost.  Defaults to fqdn fact.
 #   $vhost_name
 #     Name of the apache::vhost resource for namespacing/namevar
 #     defaults to 'confluence'
@@ -134,11 +155,27 @@ class confluence (
   $https_port           = '443',
   $user                 = 'confluence',
   $group                = 'confluence',
-  $confluence_base_dir  = $confluence::params::confluence_base_dir,
-  $confluence_etc_dir   = $confluence::params::confluence_etc_dir,
-  $server_xml_path      = $confluence::params::server_xml_path,
   $servername           = $confluence::params::servername,
+  $base_dir             = $confluence::params::base_dir,
+  $etc_dir              = $confluence::params::etc_dir,
   $certs_dir            = $confluence::params::certs_dir,
+  $webapps_dir          = $confluence::params::webapps_dir,
+  $log_dir              = $confluence::params::log_dir,
+  $data_dir             = $confluence::params::data_dir,
+  $webapp               = $confluence::params::webapp,
+  $webapp_dir           = $confluence::params::webapp_dir,
+  $webapp_conf          = $confluence::params::webapp_conf,
+  $user_config          = $confluence::params::user_config,
+  $conluence_init       = $confluence::params::confluence_init,
+  $server_xml           = $confluence::params::server_xml,
+  $confluence_conf      = $confluence::params::confluence_conf,
+  $symlink_app          = $confluence::params::symlink_app,
+  $log_links            = $confluence::params::log_links,
+  $sysconfig            = $confluence::params::sysconfig,
+  $min_heap             = $confluence::params::min_heap,
+  $perm_space           = $confluence::params::perm_space,
+  $max_heap             = $confluence::params::max_heap,
+  $log_group            = $confluence::params::log_group,         
   $standalone           = false,
   $default_vhost        = true,
   $vhost_name           = 'confluence',
@@ -179,9 +216,9 @@ class confluence (
   validate_re($ldaps_port, '^[0-9]+$')
 
   # Paths should be absolute
-  validate_absolute_path($confluence_base_dir)
-  validate_absolute_path($confluence_etc_dir)
-  validate_absolute_path($server_xml_path)
+  validate_absolute_path($base_dir)
+  validate_absolute_path($etc_dir)
+  validate_absolute_path($server_xml)
   validate_absolute_path($certs_dir)
 
   # Set up java
@@ -199,7 +236,7 @@ class confluence (
 #    group  => $group
 #  }
 
-  file { $server_xml_path:
+  file { $server_xml:
     ensure  => present,
     content => template('confluence/server.xml.erb'),
     notify  => Class['Confluence::Service'],

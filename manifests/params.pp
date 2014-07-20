@@ -17,25 +17,43 @@ class confluence::params {
   } else {
     $servername = $::hostname
   }
-  $confluence_base_dir = '/usr/share/confluence'
-  $confluence_etc_dir = "${confluence_base_dir}/conf"
-  $certs_dir = "${confluence_base_dir}/pki"
+  $base_dir    = '/usr/share/confluence'
+  $etc_dir     = "${base_dir}/conf"
+  $certs_dir   = "${base_dir}/pki"
+  $webapps_dir = "${base_dir}/webapps"
+  $log_dir     = "${base_dir}/logs"
+  $data_dir    = "${base_dir}/data"  
+  $webapp      = 'ROOT'
+  $webapp_dir  = "${webapps_dir}/${webapp}"
+  $webapp_conf = "${webapp_dir}/WEB-INF/classes"
 
-  $server_xml_path = "${confluence_etc_dir}/server.xml"
+  $user_config     = "${webapp_conf}/atlassian-user.xml"
+  $confluence_init = "${webapp_conf}/confluence-init.properties"
+  $server_xml      = "${etc_dir}/server.xml"
+  $confluence_conf = "${data_dir}/confluence.cfg.xml"
 
+  $symlink_app = undef
+  $log_links   = [ '/var/log/confluence', "${data_dir}/logs" ]
+  $etc_links   = [ '/etc/confluence' ]
+
+  $min_heap   = 256
+  $perm_space = 256
+  if $::memorysize_mb <= 1024 {
+    $max_heap   = 512
+  } else {
+    $max_heap   = $::memorysize_mb / 2
+  }
   if $::osfamily == 'Debian' {
-    $ssl_cert         = '/etc/ssl/certs/ssl-cert-snakeoil.pem'
-    $ssl_key          = '/etc/ssl/private/ssl-cert-snakeoil.key'
-    $ssl_certs_dir    = '/etc/ssl/certs'
     $package_source   = 'apt'
+    $sysconfig        = '/etc/default/confluence'
+    $log_group        = 'adm'
   } elsif $::osfamily == 'RedHat' {
-    $ssl_cert         = '/etc/pki/tls/certs/localhost.crt'
-    $ssl_key          = '/etc/pki/tls/private/localhost.key'
-    $ssl_certs_dir    = $::distrelease ? {
-      '5'     => '/etc/pki/tls/certs',
-      default => '/etc/ssl/certs',
-    }
+    #$ssl_certs_dir    = $::distrelease ? {
+    #  '5'     => '/etc/pki/tls/certs',
+    #  default => '/etc/ssl/certs',
+    #}
     $package_source   = 'yum'
+    $sysconfig        = '/etc/sysconfig/confluence'
   } else {
     fail("Class['confluence::params']: Unsupported osfamily: ${::osfamily}")
   }
