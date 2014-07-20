@@ -259,25 +259,33 @@ class confluence (
   # Package should do this, but is custom
   # so, just be sure user and group are made and right
   if ($gid == undef) {
-    group { $group: ensure => present }
+    group { $group: 
+      ensure  => present,
+      require => Class['Confluence::Package']
+    }
   } else {
     group { $group:
       ensure => present,
-      gid    => $gid
+      gid    => $gid,
+      require => Class['Confluence::Package']
     }
   }
   if ($uid == undef) {
     user { $user:
       ensure    => present,
       gid       => $group,
-      require   => Group[$group]
+      require   => [
+        Group[$group],
+        Class['Confluence::Package'] ]
     }
   } else {
     user { $user:
       ensure    => present,
       uid       => $uid,
       gid       => $group,
-      require   => Group[$group]
+      require   =>  [
+        Group[$group],
+        Class['Confluence::Package'] ]
     }
   }
   # Set up all our directories.
