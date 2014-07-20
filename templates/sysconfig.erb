@@ -1,0 +1,9 @@
+##################################
+# This file is managed by puppet #
+##################################
+CONFLUENCE_USER=<%= @user %>
+CONFLUENCE_GROUP=<%= @group %>
+
+JAVA_OPTS="-Djava.awt.headless=true -Xms<%= @min_heap %>M -Xmx<%= @max_heap %>M -XX:MaxPermSize=<%= @perm_space %>M"
+
+unset LC_ALL

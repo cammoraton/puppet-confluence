@@ -466,6 +466,13 @@ class confluence (
     require => File[$data_dir]
   }
 
+  # Sysconfig
+  file { $sysconfig:
+    ensure  => present,
+    content => template('confluence/sysconfig.erb'),
+    notify  => Class['Confluence::Service']
+  }
+
   # Not yet implemented (still thinking through implications)
   # $confluence_conf
   # and
@@ -502,12 +509,15 @@ class confluence (
     }
   }
 
+  # Major behavioral switches
+  # Whether to set up apache or not.
   unless $standalone {
     class { 'confluence::apache':
       subscribe => Class['Confluence::Service']
     }
   }
 
+  # Whether to set up postgresql or not.
   if $local_database {
     class { 'confluence::postgresql':
       notify => Class['Confluence::Service']
