@@ -51,10 +51,10 @@
 #      Group to run confluence as.  Defaults to 'confluence'
 #   $base_dir
 #   $etc_dir
-#   $certs_dir 
+#   $certs_dir
 #   $webapps_dir
 #   $log_dir
-#   $data_dir 
+#   $data_dir
 #   $webapp
 #   $webapp_dir
 #   $webapp_conf
@@ -65,7 +65,7 @@
 #   $symlink_app
 #   $log_links
 #   $etc_links
-#   $sysconfig 
+#   $sysconfig
 #   $min_heap
 #   $perm_space
 #   $max_heap
@@ -175,7 +175,7 @@ class confluence (
   $min_heap             = $confluence::params::min_heap,
   $perm_space           = $confluence::params::perm_space,
   $max_heap             = $confluence::params::max_heap,
-  $log_group            = $confluence::params::log_group,         
+  $log_group            = $confluence::params::log_group,
   $standalone           = false,
   $default_vhost        = true,
   $vhost_name           = 'confluence',
