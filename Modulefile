@@ -1,5 +1,5 @@
 name    'ccis-confluence'
-version '0.1.0'
+version '0.2.0'
 source 'https://github.ccs.neu.edu:ncc/ccis-packer-templates.git'
 author 'ncc@ccs.neu.edu'
 license ''

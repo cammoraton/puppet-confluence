@@ -69,12 +69,37 @@ describe 'confluence', :type => :class do
 
     it { should contain_class("confluence::service").with(
       'subscribe' => 'Class[Java]')}
+    it { should contain_group("confluence") }
+    it { should contain_user("confluence").with(
+      'require' => [
+        'Group[confluence]',
+        'Class[Confluence::Package]']) }
     
-    it { should contain_class("confluence::apache") }
-    it { should contain_class("apache::service") } 
-    
-    it { should contain_class("confluence::postgresql") }
+    [ "/usr/share/confluence",
+      "/etc/confluence",
+      "/usr/share/confluence/webapps",
+      "/usr/share/confluence/logs",
+      "/usr/share/confluence/data" ].each do |directory|
+      it { should contain_file(directory).with(
+        'owner'  => 'confluence',
+        'ensure' => 'directory' )}
+    end
+
+    # Files
+
+    it { should contain_class("confluence::apache").with(
+      'subscribe' => 'Class[Confluence::Service]') }
+    #it { should include_apache_listen('80') }
+    #it { should include_apache_mod('ssl') }
+    #it { should include_apache_mod('proxy_ajp') }
+    #it { should include_apache_vhost('confluence') }
+    #it { should include_apache_vhost('confluence-ssl') }
+    it { should contain_class("apache::service") }
+          
+    it { should contain_class("confluence::postgresql").with(
+      'notify' => 'Class[Confluence::Service]')  }
     it { should contain_class("postgresql::server::service") }
+      
       
     describe "when standalone parameter is set to true" do
       let :params do
@@ -86,6 +111,15 @@ describe 'confluence', :type => :class do
       it { should_not contain_class("apache::service") }
     end
     
+    describe "when local_database parameter is set to false" do
+      let :params do
+        { :local_database => false,
+          :package_source  => 'none' }
+      end
+      it { should_not contain_class("confluence::postgresql") }
+      it { should_not contain_class("postgresql::server::service") }
+    end
+    
     describe "when ldaps parameters are set" do
       let :params do
         { :ldaps_server   => "ldap.example.com",
@@ -95,15 +129,6 @@ describe 'confluence', :type => :class do
       it { should contain_file("/usr/share/confluence/pki") }
       it { should contain_file("/usr/share/confluence/pki/ldap.example.com.pem") }
       it { should contain_java_ks("confluence::ldaps_server::ldap.example.com::certificate") }
-    end
-    
-    describe "when local_database parameter is set to false" do
-      let :params do
-        { :local_database => false,
-          :package_source  => 'none' }
-      end
-      it { should_not contain_class("confluence::postgresql") }
-      it { should_not contain_class("postgresql::server::service") }
     end
   end
 end
