@@ -14,13 +14,15 @@
     
 ##Overview
 
-This project is intended to be a re-usable [Puppet](http://www.puppetlabs.com/puppet/) module that you can include in your own puppet environments.  It's goal is to enable you to set up and manage Atlassian Confluence with a minimal amount of effort.
+This project is intended to be a re-usable [Puppet](http://www.puppetlabs.com/puppet/) module that you can include in your own puppet environments.  It's goal is to enable you to set up and manage [Confluence](https://www.atlassian.com/software/confluence) with a minimal amount of effort.
 
 ##Module Description
 
-Atlassian Confluence is widely used enterprise wiki / team collaboration java application that is part of the atlassian family of products(which also include JIRA).  It is distributed to us from Atlassian, in their infinite wisdom via either a standalone binary or a tarball of an exploded war.
+[Confluence](https://www.atlassian.com/software/confluence) is a widely used enterprise wiki / team collaboration java application that is part of the atlassian family of products(which also include JIRA).  It is distributed to us from Atlassian, in their infinite wisdom via either a standalone binary or a tarball of an exploded war.
 
 ###Packaging Atlassian Confluence
+
+For debian-based distributions at least, I put together a shell script that creates what I think is a sane standalone confluence. You can grab that [here](https://github.com/cammoraton/confluence-package-deb).
 
 ##Setup
 
