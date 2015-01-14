@@ -14,7 +14,7 @@
     
 ##Overview
 
-This project is intended to be a re-usable [Puppet](http://www.puppetlabs.com/puppet/) module that you can include in your own puppet environments.  It's goal is to enable you to set up and manage [Confluence](https://www.atlassian.com/software/confluence) with a minimal amount of effort.
+This Project is intended to be a re-usable [Puppet](http://www.puppetlabs.com/puppet/) module that you can include in your own puppet environments.  It's goal is to enable you to set up and manage [Confluence](https://www.atlassian.com/software/confluence) with a minimal amount of effort.
 
 ##Module Description
 
